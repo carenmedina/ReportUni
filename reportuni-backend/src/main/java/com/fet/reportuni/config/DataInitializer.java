@@ -7,16 +7,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/**
- * Siembra usuarios de prueba al iniciar la aplicacion, unicamente si la
- * tabla "usuarios" esta vacia. Esto permite probar el login institucional
- * (autenticacion) sin depender todavia de un proceso de registro.
- *
- * Credenciales de prueba (documentar en el acta / entrega):
- *   estudiante1@fet.edu.co   / ReportUni2026  (ESTUDIANTE)
- *   estudiante2@fet.edu.co   / ReportUni2026  (ESTUDIANTE)
- *   admin@fet.edu.co         / ReportUni2026  (ADMINISTRADOR)
- */
 @Component
 public class DataInitializer implements CommandLineRunner {
 

@@ -8,11 +8,6 @@ import { LoginRequest, LoginResponse, UsuarioSesion } from '../models/usuario.mo
 const TOKEN_KEY = 'reportuni_token';
 const USUARIO_KEY = 'reportuni_usuario';
 
-/**
- * Maneja la sesion del usuario: login contra el backend, guardado del
- * token JWT y de los datos basicos del usuario en localStorage, y
- * exposicion reactiva (signal) del usuario actual para la interfaz.
- */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly usuarioActualSignal = signal<UsuarioSesion | null>(this.leerUsuarioGuardado());

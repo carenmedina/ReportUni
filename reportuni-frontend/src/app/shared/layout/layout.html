@@ -1,6 +1,4 @@
 <div class="ru-app">
-  <!-- Header institucional: en escritorio muestra el menu Q10 completo;
-       en movil se colapsa al logo + boton de menu. -->
   <header class="ru-header">
     <div class="ru-header__logo">
       <span class="ru-header__logo-text">Q10</span>
@@ -47,7 +45,6 @@
     </button>
   </header>
 
-  <!-- Sub-navegacion del modulo Reportes: mismas pestañas en escritorio y movil. -->
   <div class="ru-subnav">
     @for (item of itemsMenu(); track item.ruta) {
       <a
@@ -63,7 +60,6 @@
     <span class="ru-subnav__hint">Módulo Reportes</span>
   </div>
 
-  <!-- Menu movil de pantalla completa, estilo acordeon verde (igual al mockup Mobile_Menu). -->
   @if (menuMovilAbierto()) {
     <div class="ru-mobile-menu">
       <div class="ru-mobile-menu__item">

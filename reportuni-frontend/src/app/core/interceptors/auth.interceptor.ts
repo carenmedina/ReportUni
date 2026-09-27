@@ -4,11 +4,6 @@ import { catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-/**
- * Agrega el header "Authorization: Bearer <token>" a cada peticion hacia
- * la API cuando hay una sesion activa, y redirige al login si el backend
- * responde 401 (token vencido o invalido).
- */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
