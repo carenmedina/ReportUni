@@ -1,0 +1,34 @@
+.ru-placeholder {
+  max-width: 480px;
+  margin: 60px auto;
+  padding: 32px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid var(--ru-border);
+  border-radius: 6px;
+}
+
+.ru-placeholder__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--ru-green-light);
+  color: var(--ru-green-darker);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
+
+.ru-placeholder h1 {
+  font-size: 18px;
+  color: var(--ru-green-dark);
+  margin: 0 0 10px 0;
+}
+
+.ru-placeholder p {
+  font-size: 13.5px;
+  color: var(--ru-text-muted);
+  line-height: 1.6;
+  margin: 0;
+}

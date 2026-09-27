@@ -1,0 +1,266 @@
+.ru-home {
+  padding: 24px 36px 40px 36px;
+}
+
+.ru-home__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px 0;
+    color: var(--ru-green-dark);
+    font-weight: 700;
+  }
+
+  p {
+    font-size: 13.5px;
+    color: var(--ru-text-muted);
+    margin: 0;
+    max-width: 640px;
+  }
+}
+
+.ru-home__nuevo {
+  flex-shrink: 0;
+}
+
+.ru-home__stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.ru-statcard {
+  flex: 1;
+  min-width: 160px;
+  background: #ffffff;
+  border: 1px solid var(--ru-border);
+  border-radius: 6px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ru-statcard__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ru-statcard__icon--total {
+  background: #eef2f3;
+  color: #546e7a;
+}
+
+.ru-statcard__icon--pendiente {
+  background: #fcf3e3;
+  color: #b98016;
+}
+
+.ru-statcard__icon--proceso {
+  background: #e3effc;
+  color: #2b6cb0;
+}
+
+.ru-statcard__icon--resuelto {
+  background: var(--ru-green-light);
+  color: #2e7d32;
+}
+
+.ru-statcard__num {
+  font-size: 26px;
+  font-weight: 700;
+  color: #222222;
+  line-height: 1;
+}
+
+.ru-statcard__label {
+  font-size: 12px;
+  color: #777777;
+  margin-top: 2px;
+}
+
+.ru-home__body {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.ru-panel {
+  background: #ffffff;
+  border: 1px solid var(--ru-border);
+  border-radius: 6px;
+  padding: 22px 24px;
+  box-sizing: border-box;
+
+  h2 {
+    font-size: 15px;
+    margin: 0;
+    color: #333333;
+    font-weight: 700;
+  }
+}
+
+.ru-home__tabla {
+  flex: 2.1;
+  min-width: 320px;
+}
+
+.ru-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  p {
+    font-size: 11.5px;
+    color: #999999;
+    margin: 2px 0 0 0;
+  }
+}
+
+.ru-home__ver-todos {
+  font-size: 12.5px;
+  font-weight: 600;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.ru-tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ru-th {
+  font-size: 11px;
+  color: var(--ru-text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 700;
+  text-align: left;
+  padding: 0 8px 10px 0;
+}
+
+.ru-td {
+  font-size: 13.5px;
+  color: #333333;
+  padding: 12px 8px 12px 0;
+  border-top: 1px solid #eff0f1;
+}
+
+.ru-td--muted {
+  color: #666666;
+}
+
+.ru-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.ru-badge--resuelto {
+  background: var(--ru-green-light);
+  color: #2e7d32;
+}
+
+.ru-badge--proceso {
+  background: #e3effc;
+  color: #2b6cb0;
+}
+
+.ru-badge--pendiente {
+  background: #fcf3e3;
+  color: #b98016;
+}
+
+.ru-home__aside {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ru-home__ayuda ul {
+  margin: 12px 0 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+  color: #333333;
+}
+
+.ru-home__consejo {
+  background: var(--ru-green-light);
+  border-color: var(--ru-green-border);
+}
+
+.ru-home__consejo-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  h2 {
+    font-size: 13.5px;
+    color: var(--ru-green-dark);
+  }
+}
+
+.ru-home__consejo p {
+  font-size: 12.5px;
+  color: #3a5a3a;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.ru-home__soporte h2 {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.ru-home__soporte p {
+  font-size: 12.5px;
+  color: var(--ru-text-muted);
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .ru-home {
+    padding: 18px 16px 28px 16px;
+  }
+
+  .ru-home__stats {
+    gap: 8px;
+  }
+
+  .ru-statcard {
+    min-width: calc(50% - 4px);
+    flex: none;
+    padding: 12px;
+  }
+
+  .ru-panel {
+    padding: 18px;
+  }
+}

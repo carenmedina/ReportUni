@@ -1,0 +1,116 @@
+/* ==========================================================
+   ReportUni — estilos globales
+   Paleta tomada de los mockups (Claude Design) aprobados,
+   que a su vez replican la identidad visual de Q10.
+   ========================================================== */
+
+:root {
+  --ru-green: #47a447;
+  --ru-green-dark: #1b3b1b;
+  --ru-green-darker: #2e5b2e;
+  --ru-green-light: #e6f4ea;
+  --ru-green-border: #cfe8cf;
+  --ru-bg: #edeff0;
+  --ru-white: #ffffff;
+  --ru-border: #e4e6e7;
+  --ru-border-input: #d2d6d8;
+  --ru-text: #333333;
+  --ru-text-muted: #666666;
+  --ru-text-faint: #888888;
+  --ru-text-soft: #8a8f91;
+  --ru-danger: #e05252;
+  --ru-toggle-dark: #262626;
+
+  --ru-radius: 4px;
+  --ru-radius-lg: 6px;
+  --ru-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--ru-font);
+  color: var(--ru-text);
+  background: var(--ru-bg);
+}
+
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #245682;
+  text-decoration: underline;
+}
+
+input,
+select,
+button {
+  font-family: inherit;
+}
+
+.ru-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px 11px 40px;
+  border: 1px solid var(--ru-border-input);
+  border-radius: var(--ru-radius);
+  font-size: 14px;
+  color: var(--ru-text);
+  font-family: inherit;
+}
+
+.ru-input:focus {
+  outline: none;
+  border-color: var(--ru-green);
+}
+
+.ru-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--ru-green);
+  color: #ffffff;
+  border: none;
+  text-align: center;
+  padding: 12px 18px;
+  border-radius: var(--ru-radius);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.ru-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ru-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #ffffff;
+  color: var(--ru-text-muted);
+  border: 1px solid var(--ru-border);
+  text-align: center;
+  padding: 11px 17px;
+  border-radius: var(--ru-radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}

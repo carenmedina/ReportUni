@@ -1,0 +1,231 @@
+.ru-login {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ru-bg);
+}
+
+.ru-login__topbar {
+  width: 100%;
+  height: 64px;
+  background: var(--ru-green);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ru-login__logo {
+  width: 150px;
+  height: 64px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ru-login__logo-text {
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--ru-green);
+  letter-spacing: 0.5px;
+}
+
+.ru-login__topbar-text {
+  flex-grow: 1;
+  text-align: right;
+  padding-right: 32px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.ru-login__content {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 72px;
+  padding: 40px 24px;
+  flex-wrap: wrap;
+}
+
+.ru-login__intro {
+  width: 460px;
+  max-width: 100%;
+}
+
+.ru-login__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ru-green-light);
+  color: #2e7d32;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 6px 12px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+}
+
+.ru-login__intro h1 {
+  font-size: 30px;
+  margin: 0 0 12px 0;
+  color: var(--ru-green-dark);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.ru-login__intro p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #555555;
+  margin: 0;
+}
+
+.ru-login__card {
+  width: 420px;
+  max-width: 100%;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--ru-border);
+  padding: 36px 36px 30px 36px;
+  flex-shrink: 0;
+}
+
+.ru-login__card h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: var(--ru-text);
+  font-weight: 700;
+}
+
+.ru-login__card-sub {
+  margin: 0 0 24px 0;
+  font-size: 13px;
+  color: var(--ru-text-faint);
+}
+
+.ru-login__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555555;
+  margin-bottom: 6px;
+}
+
+.ru-login__field {
+  position: relative;
+  margin-bottom: 6px;
+
+  svg {
+    position: absolute;
+    left: 12px;
+    top: 13px;
+    pointer-events: none;
+  }
+
+  .ru-input {
+    padding-right: 52px;
+  }
+}
+
+.ru-login__toggle-pass {
+  position: absolute;
+  right: 10px;
+  top: 9px;
+  border: none;
+  background: none;
+  color: var(--ru-green-darker);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.ru-login__field-error {
+  margin: 0 0 12px 0;
+  font-size: 11.5px;
+  color: var(--ru-danger);
+}
+
+.ru-login__error-banner {
+  background: #fdecea;
+  border: 1px solid #f4c7c3;
+  color: #a02622;
+  font-size: 12.5px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin: 4px 0 16px 0;
+}
+
+.ru-login__submit {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.ru-login__divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0;
+
+  span {
+    flex-grow: 1;
+    height: 1px;
+    background: #eaeaea;
+  }
+
+  em {
+    font-style: normal;
+    font-size: 11px;
+    color: #b0b0b0;
+    letter-spacing: 0.4px;
+  }
+}
+
+.ru-login__support {
+  font-size: 12px;
+  color: var(--ru-text-faint);
+  text-align: center;
+  margin: 0;
+}
+
+.ru-login__footer {
+  width: 100%;
+  height: 34px;
+  background: var(--ru-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  flex-shrink: 0;
+  color: #ffffff;
+  font-size: 11.5px;
+}
+
+.ru-login__footer-secondary {
+  opacity: 0.85;
+}
+
+@media (max-width: 640px) {
+  .ru-login__topbar-text {
+    display: none;
+  }
+
+  .ru-login__content {
+    padding: 24px 16px;
+    gap: 24px;
+  }
+
+  .ru-login__intro h1 {
+    font-size: 22px;
+  }
+
+  .ru-login__card {
+    padding: 26px 22px 22px 22px;
+  }
+}

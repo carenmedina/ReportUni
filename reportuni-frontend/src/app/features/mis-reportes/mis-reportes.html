@@ -1,0 +1,85 @@
+<div class="ru-mis-reportes">
+  <div class="ru-mis-reportes__heading">
+    <div>
+      <h1>Mis reportes</h1>
+      <p>
+        Listado completo de tus reportes, con búsqueda y filtro por estado. Desde aquí gestionas
+        todos, no solo los recientes.
+      </p>
+    </div>
+    <a routerLink="/nuevo-reporte" class="ru-btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Nuevo reporte
+    </a>
+  </div>
+
+  <section class="ru-panel">
+    <div class="ru-toolbar">
+      <div class="ru-toolbar__buscar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8F91" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          placeholder="Buscar por ID, salón o descripción..."
+          [value]="busqueda()"
+          (input)="actualizarBusqueda($any($event.target).value)"
+        />
+      </div>
+
+      <select class="ru-select" [value]="filtroEstado()" (change)="actualizarFiltroEstado($any($event.target).value)">
+        <option value="TODOS">Todos los estados</option>
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="EN_PROCESO">En proceso</option>
+        <option value="RESUELTO">Resuelto</option>
+      </select>
+
+      <span class="ru-toolbar__spacer"></span>
+      <span class="ru-toolbar__count">{{ reportesFiltrados().length }} resultados</span>
+    </div>
+
+    <table class="ru-tabla">
+      <tr>
+        <td class="ru-th" style="width: 70px;">ID</td>
+        <td class="ru-th">Tipo de daño</td>
+        <td class="ru-th">Ubicación</td>
+        <td class="ru-th" style="width: 100px;">Fecha</td>
+        <td class="ru-th" style="width: 120px;">Estado</td>
+        <td class="ru-th" style="width: 90px;">Prioridad</td>
+        <td class="ru-th" style="width: 90px;"></td>
+      </tr>
+      @for (reporte of reportesFiltrados(); track reporte.id) {
+        <tr>
+          <td class="ru-td ru-td--muted">{{ reporte.id }}</td>
+          <td class="ru-td">{{ reporte.tipo }}</td>
+          <td class="ru-td">{{ reporte.ubicacion }}</td>
+          <td class="ru-td">{{ reporte.fecha }}</td>
+          <td class="ru-td">
+            <span
+              class="ru-badge"
+              [class.ru-badge--resuelto]="reporte.estado === 'RESUELTO'"
+              [class.ru-badge--proceso]="reporte.estado === 'EN_PROCESO'"
+              [class.ru-badge--pendiente]="reporte.estado === 'PENDIENTE'"
+            >
+              ● {{ etiquetaEstado(reporte.estado) }}
+            </span>
+          </td>
+          <td class="ru-td">
+            <span class="ru-prioridad" [class.ru-prioridad--alta]="reporte.prioridad === 'ALTA'">
+              {{ etiquetaPrioridad(reporte.prioridad) }}
+            </span>
+          </td>
+          <td class="ru-td"><a routerLink="/mis-reportes">Ver detalle</a></td>
+        </tr>
+      } @empty {
+        <tr>
+          <td class="ru-td" colspan="7">No se encontraron reportes con ese criterio.</td>
+        </tr>
+      }
+    </table>
+  </section>
+</div>

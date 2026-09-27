@@ -1,0 +1,103 @@
+<div class="ru-login">
+  <header class="ru-login__topbar">
+    <div class="ru-login__logo">
+      <span class="ru-login__logo-text">Q10</span>
+    </div>
+    <span class="ru-login__topbar-text">Plataforma académica Q10&nbsp;&nbsp;·&nbsp;&nbsp;ReportUni</span>
+  </header>
+
+  <main class="ru-login__content">
+    <section class="ru-login__intro">
+      <div class="ru-login__badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        MÓDULO REPORTES · CAMPUS
+      </div>
+      <h1>Reporta y da seguimiento a los daños del campus, sin salir de Q10.</h1>
+      <p>
+        Fugas, daños eléctricos, mobiliario, videobeams o cualquier inconveniente en las
+        instalaciones. Toma una foto, describe la ubicación y el equipo de mantenimiento se
+        encarga del resto.
+      </p>
+    </section>
+
+    <section class="ru-login__card">
+      <h2>Iniciar sesión</h2>
+      <p class="ru-login__card-sub">Ingresa con tus credenciales institucionales</p>
+
+      <form [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+        <label class="ru-login__label" for="correo">Correo institucional</label>
+        <div class="ru-login__field">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A8F91" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="M2 6l10 7 10-7"></path>
+          </svg>
+          <input
+            id="correo"
+            class="ru-input"
+            type="email"
+            placeholder="correo@fet.edu.co"
+            formControlName="correoInstitucional"
+            autocomplete="username"
+          />
+        </div>
+        @if (form.controls.correoInstitucional.touched && form.controls.correoInstitucional.invalid) {
+          <p class="ru-login__field-error">Ingresa tu correo institucional (@fet.edu.co).</p>
+        }
+
+        <label class="ru-login__label" for="password">Contraseña</label>
+        <div class="ru-login__field">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A8F91" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <input
+            id="password"
+            class="ru-input"
+            [type]="mostrarPassword() ? 'text' : 'password'"
+            placeholder="Contraseña"
+            formControlName="password"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="ru-login__toggle-pass"
+            (click)="alternarPassword()"
+            [attr.aria-label]="mostrarPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+          >
+            {{ mostrarPassword() ? 'Ocultar' : 'Ver' }}
+          </button>
+        </div>
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <p class="ru-login__field-error">La contraseña es obligatoria.</p>
+        }
+
+        @if (errorMensaje()) {
+          <p class="ru-login__error-banner">{{ errorMensaje() }}</p>
+        }
+
+        <button type="submit" class="ru-btn-primary ru-login__submit" [disabled]="cargando()">
+          {{ cargando() ? 'INGRESANDO…' : 'INGRESAR' }}
+        </button>
+      </form>
+
+      <div class="ru-login__divider">
+        <span></span>
+        <em>SOPORTE</em>
+        <span></span>
+      </div>
+
+      <p class="ru-login__support">
+        ¿Problemas para ingresar? Escríbenos a<br />
+        <a href="mailto:soporte-tic@fet.edu.co">soporte-tic&#64;fet.edu.co</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="ru-login__footer">
+    <span>© Q10 · Sistema de Reportes Universitario V1.0</span>
+    <span class="ru-login__footer-secondary">Fundación Escuela Tecnológica de Neiva</span>
+  </footer>
+</div>

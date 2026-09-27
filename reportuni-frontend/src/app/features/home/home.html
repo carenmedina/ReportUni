@@ -1,0 +1,126 @@
+<div class="ru-home">
+  <div class="ru-home__heading">
+    <div>
+      <h1>Resumen de reportes</h1>
+      <p>
+        Hola{{ usuario()?.nombreCompleto ? ', ' + usuario()!.nombreCompleto : '' }}. Vista general de tu
+        actividad. Para ver, filtrar o buscar todos tus reportes, ve a
+        <a routerLink="/mis-reportes">Mis reportes</a>.
+      </p>
+    </div>
+    <a routerLink="/nuevo-reporte" class="ru-btn-primary ru-home__nuevo">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Nuevo reporte
+    </a>
+  </div>
+
+  <div class="ru-home__stats">
+    <div class="ru-statcard">
+      <div class="ru-statcard__icon ru-statcard__icon--total">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"></path><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.5 0 2.9.37 4.14 1.02"></path><path d="M21 5l-9 9"></path></svg>
+      </div>
+      <div>
+        <div class="ru-statcard__num">{{ totales.total }}</div>
+        <div class="ru-statcard__label">Reportes totales</div>
+      </div>
+    </div>
+    <div class="ru-statcard">
+      <div class="ru-statcard__icon ru-statcard__icon--pendiente">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </div>
+      <div>
+        <div class="ru-statcard__num">{{ totales.pendientes }}</div>
+        <div class="ru-statcard__label">Pendientes</div>
+      </div>
+    </div>
+    <div class="ru-statcard">
+      <div class="ru-statcard__icon ru-statcard__icon--proceso">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3.5-7.1"></path><polyline points="21 3 21 8 16 8"></polyline></svg>
+      </div>
+      <div>
+        <div class="ru-statcard__num">{{ totales.enProceso }}</div>
+        <div class="ru-statcard__label">En proceso</div>
+      </div>
+    </div>
+    <div class="ru-statcard">
+      <div class="ru-statcard__icon ru-statcard__icon--resuelto">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <div>
+        <div class="ru-statcard__num">{{ totales.resueltos }}</div>
+        <div class="ru-statcard__label">Resueltos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ru-home__body">
+    <section class="ru-panel ru-home__tabla">
+      <div class="ru-panel__header">
+        <div>
+          <h2>Últimos {{ ultimosReportes.length }} reportes</h2>
+          <p>Solo tus movimientos más recientes. El listado completo con filtros está en "Mis reportes".</p>
+        </div>
+        <a routerLink="/mis-reportes" class="ru-home__ver-todos">Ver mis {{ totales.total }} reportes →</a>
+      </div>
+
+      <table class="ru-tabla">
+        <tr>
+          <td class="ru-th" style="width: 70px;">ID</td>
+          <td class="ru-th">Tipo de daño</td>
+          <td class="ru-th">Ubicación</td>
+          <td class="ru-th" style="width: 90px;">Fecha</td>
+          <td class="ru-th" style="width: 120px;">Estado</td>
+        </tr>
+        @for (reporte of ultimosReportes; track reporte.id) {
+          <tr>
+            <td class="ru-td ru-td--muted">{{ reporte.id }}</td>
+            <td class="ru-td">{{ reporte.tipo }}</td>
+            <td class="ru-td">{{ reporte.ubicacion }}</td>
+            <td class="ru-td">{{ reporte.fecha }}</td>
+            <td class="ru-td">
+              <span
+                class="ru-badge"
+                [class.ru-badge--resuelto]="reporte.estado === 'RESUELTO'"
+                [class.ru-badge--proceso]="reporte.estado === 'EN_PROCESO'"
+                [class.ru-badge--pendiente]="reporte.estado === 'PENDIENTE'"
+              >
+                ●
+                {{ reporte.estado === 'RESUELTO' ? 'Resuelto' : reporte.estado === 'EN_PROCESO' ? 'En proceso' : 'Pendiente' }}
+              </span>
+            </td>
+          </tr>
+        }
+      </table>
+    </section>
+
+    <aside class="ru-home__aside">
+      <section class="ru-panel ru-home__ayuda">
+        <h2>Guías y ayuda</h2>
+        <ul>
+          <li>Guía de uso — Módulo Reportes: <a href="#">Selecciona aquí</a></li>
+          <li>Cómo tomar buenas fotos del daño: <a href="#">Ver guía</a></li>
+          <li>Video: reportar un daño paso a paso: <a href="#">Vídeo aquí</a></li>
+        </ul>
+      </section>
+
+      <section class="ru-panel ru-home__consejo">
+        <div class="ru-home__consejo-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2.4"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <h2>Consejo rápido</h2>
+        </div>
+        <p>
+          Adjunta al menos una fotografía clara y describe puntos de referencia cercanos (salón,
+          pasillo, piso). Así el equipo de mantenimiento ubica el daño más rápido.
+        </p>
+      </section>
+
+      <section class="ru-panel ru-home__soporte">
+        <h2>¿Necesitas ayuda?</h2>
+        <p>Escríbenos a <a href="mailto:soporte-tic@fet.edu.co">soporte-tic&#64;fet.edu.co</a></p>
+      </section>
+    </aside>
+  </div>
+</div>

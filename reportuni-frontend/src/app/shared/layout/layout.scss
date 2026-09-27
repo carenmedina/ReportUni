@@ -1,0 +1,274 @@
+.ru-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ru-bg);
+}
+
+/* ---------- Header ---------- */
+
+.ru-header {
+  width: 100%;
+  height: 64px;
+  background: var(--ru-green);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ru-header__logo {
+  width: 150px;
+  height: 64px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ru-header__logo-text {
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--ru-green);
+  letter-spacing: 0.5px;
+}
+
+.ru-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding-left: 30px;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.ru-navlink {
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  padding: 0 2px;
+  white-space: nowrap;
+}
+
+.ru-navlink--active {
+  font-weight: 700;
+  border-bottom: 3px solid #ffffff;
+}
+
+.ru-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding-right: 28px;
+  flex-shrink: 0;
+}
+
+.ru-header__bell {
+  position: relative;
+  display: flex;
+}
+
+.ru-header__bell-dot {
+  position: absolute;
+  top: -3px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: var(--ru-danger);
+  border-radius: 50%;
+  border: 1.5px solid var(--ru-green);
+}
+
+.ru-header__user {
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.ru-header__toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  background: var(--ru-toggle-dark);
+  border: none;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 14px;
+  cursor: pointer;
+}
+
+/* ---------- Sub-nav (Resumen / Mis reportes) ---------- */
+
+.ru-subnav {
+  width: 100%;
+  height: 46px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--ru-border);
+  display: flex;
+  align-items: center;
+  padding: 0 36px;
+  gap: 30px;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.ru-subnav__tab {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ru-text-muted);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 2.5px solid transparent;
+  white-space: nowrap;
+}
+
+.ru-subnav__tab:hover {
+  text-decoration: none;
+  color: var(--ru-green-darker);
+}
+
+.ru-subnav__tab--active {
+  font-weight: 700;
+  color: #2e7d32;
+  border-bottom: 2.5px solid #2e7d32;
+}
+
+.ru-subnav__spacer {
+  flex-grow: 1;
+}
+
+.ru-subnav__hint {
+  font-size: 11px;
+  color: #aaaaaa;
+  white-space: nowrap;
+}
+
+/* ---------- Mobile full-screen menu ---------- */
+
+.ru-mobile-menu {
+  display: none;
+  flex-direction: column;
+  background: var(--ru-green);
+  padding: 10px 0 20px 0;
+}
+
+.ru-mobile-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 400;
+  padding: 15px 20px;
+  opacity: 0.92;
+}
+
+.ru-mobile-menu__item--current {
+  font-weight: 700;
+  opacity: 1;
+}
+
+.ru-mobile-menu__badge {
+  margin-left: 8px;
+  background: var(--ru-green-dark);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9px;
+  letter-spacing: 0.3px;
+}
+
+.ru-mobile-menu__grow {
+  min-height: 24px;
+}
+
+.ru-mobile-menu__user {
+  align-self: flex-start;
+  margin: 6px 20px 0 20px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ---------- Content + footer ---------- */
+
+.ru-content {
+  flex-grow: 1;
+}
+
+.ru-footer {
+  width: 100%;
+  min-height: 34px;
+  background: var(--ru-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 28px;
+  flex-shrink: 0;
+  color: #ffffff;
+  font-size: 11.5px;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ru-footer__secondary {
+  opacity: 0.85;
+}
+
+/* ---------- Adaptacion movil: misma plataforma, layout compacto ---------- */
+
+@media (max-width: 760px) {
+  .ru-header {
+    height: auto;
+    padding: 12px 14px;
+    border-bottom: 2px solid var(--ru-green-dark);
+    box-sizing: border-box;
+  }
+
+  .ru-header__logo {
+    width: 82px;
+    height: 50px;
+  }
+
+  .ru-header__nav,
+  .ru-header__actions {
+    display: none;
+  }
+
+  .ru-header__toggle {
+    display: flex;
+    margin-right: 0;
+    margin-left: auto;
+  }
+
+  .ru-subnav {
+    padding: 0 16px;
+    gap: 22px;
+  }
+
+  .ru-mobile-menu {
+    display: flex;
+  }
+}
