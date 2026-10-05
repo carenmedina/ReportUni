@@ -1,14 +1,186 @@
-<div class="ru-placeholder">
-  <div class="ru-placeholder__icon">
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <line x1="12" y1="5" x2="12" y2="19"></line>
-      <line x1="5" y1="12" x2="19" y2="12"></line>
-    </svg>
-  </div>
-  <h1>Nuevo reporte</h1>
-  <p>
-    El formulario para crear un reporte (tipo de daño, ubicación, fotos y descripción) se
-    construye en la siguiente etapa del cronograma, una vez definido el modelo de datos de
-    reportes en el backend.
-  </p>
+<div class="nr">
+  <nav class="nr__crumb">Reportes › <strong>Nuevo reporte</strong></nav>
+  <h1 class="nr__title">Nuevo reporte de daño</h1>
+
+  @if (creado(); as r) {
+    <section class="nr__ok" role="status">
+      <h2>¡Reporte enviado!</h2>
+      <p>
+        Tu reporte <strong>#{{ r.codigo }}</strong> quedó registrado con estado
+        <strong>Pendiente</strong> y {{ r.totalFotos }} foto(s) adjunta(s).
+      </p>
+      <button type="button" class="ru-btn-primary" (click)="irAMisReportes()">Ir a Mis reportes</button>
+    </section>
+  } @else {
+    <div class="nr__grid">
+      <form class="nr__form" [formGroup]="formulario" (ngSubmit)="enviar()" novalidate>
+        @if (errorGeneral()) {
+          <div class="nr__alert" role="alert">{{ errorGeneral() }}</div>
+        }
+
+        <div class="nr__row">
+          <label class="nr__field">
+            <span>Tipo de daño *</span>
+            <select class="ru-input" formControlName="tipoDano">
+              <option value="" disabled>Selecciona una opción</option>
+              @for (t of tiposDano; track t.valor) {
+                <option [value]="t.valor">{{ t.etiqueta }}</option>
+              }
+            </select>
+            @if (invalido('tipoDano')) {
+              <small class="nr__err">Selecciona el tipo de daño</small>
+            } @else if (errorServidor('tipoDano')) {
+              <small class="nr__err">{{ errorServidor('tipoDano') }}</small>
+            }
+          </label>
+
+          <label class="nr__field">
+            <span>Prioridad estimada</span>
+            <select class="ru-input" formControlName="prioridadEstimada">
+              @for (p of prioridades; track p.valor) {
+                <option [value]="p.valor">{{ p.etiqueta }}</option>
+              }
+            </select>
+            <small class="nr__hint">El equipo de mantenimiento puede ajustarla al validar el reporte.</small>
+          </label>
+        </div>
+
+        <div class="nr__row">
+          <label class="nr__field">
+            <span>Bloque / Edificio *</span>
+            <select class="ru-input" formControlName="bloque">
+              <option value="" disabled>Selecciona una opción</option>
+              @for (b of bloques; track b.valor) {
+                <option [value]="b.valor">{{ b.etiqueta }}</option>
+              }
+            </select>
+            @if (invalido('bloque')) {
+              <small class="nr__err">Selecciona el bloque o edificio</small>
+            } @else if (errorServidor('bloque')) {
+              <small class="nr__err">{{ errorServidor('bloque') }}</small>
+            }
+          </label>
+
+          <label class="nr__field">
+            <span>Espacio específico *</span>
+            <input
+              class="ru-input"
+              type="text"
+              maxlength="120"
+              formControlName="espacioEspecifico"
+              placeholder="Ej: Salón 204, pasillo 2do piso..."
+            />
+            @if (invalido('espacioEspecifico')) {
+              <small class="nr__err">Indica el espacio específico (máx. 120 caracteres)</small>
+            } @else if (errorServidor('espacioEspecifico')) {
+              <small class="nr__err">{{ errorServidor('espacioEspecifico') }}</small>
+            }
+          </label>
+        </div>
+
+        <div class="nr__field">
+          <button
+            type="button"
+            class="ru-btn-secondary"
+            (click)="usarUbicacionActual()"
+            [disabled]="obteniendoUbicacion()"
+          >
+            {{ obteniendoUbicacion() ? 'Obteniendo ubicación…' : 'Usar mi ubicación actual (GPS del campus)' }}
+          </button>
+          @if (ubicacion(); as u) {
+            <small class="nr__gps">
+              Ubicación registrada: {{ u.latitud }}, {{ u.longitud }} (±{{ u.precisionMetros }} m)
+              <button type="button" class="nr__link" (click)="quitarUbicacion()">Quitar</button>
+            </small>
+          }
+          @if (errorUbicacion()) {
+            <small class="nr__err">{{ errorUbicacion() }}</small>
+          }
+        </div>
+
+        <label class="nr__field">
+          <span>Descripción del daño *</span>
+          <textarea
+            class="ru-input"
+            rows="4"
+            maxlength="1000"
+            formControlName="descripcion"
+            placeholder="Describe qué ocurrió y cómo afecta el espacio"
+          ></textarea>
+          @if (invalido('descripcion')) {
+            <small class="nr__err">La descripción debe tener entre 10 y 1000 caracteres</small>
+          } @else if (errorServidor('descripcion')) {
+            <small class="nr__err">{{ errorServidor('descripcion') }}</small>
+          }
+        </label>
+
+        <div class="nr__field">
+          <span>Fotografías del daño *</span>
+          <label
+            class="nr__drop"
+            [class.nr__drop--active]="arrastrando()"
+            (dragover)="alArrastrarSobre($event)"
+            (dragleave)="alSalirArrastre($event)"
+            (drop)="alSoltar($event)"
+          >
+            <input
+              type="file"
+              accept="image/jpeg,image/png"
+              multiple
+              [disabled]="!puedeAgregarFotos()"
+              (change)="alSeleccionarArchivos($event)"
+              hidden
+            />
+            <strong>Arrastra tus fotos aquí o selecciona un archivo</strong>
+            <small>JPG o PNG · máx. 10 MB por foto · hasta {{ limiteFotos }} fotos</small>
+          </label>
+          @if (errorFotos()) {
+            <small class="nr__err">{{ errorFotos() }}</small>
+          }
+          @if (fotos().length > 0) {
+            <ul class="nr__thumbs">
+              @for (f of fotos(); track f.vistaPrevia; let i = $index) {
+                <li>
+                  <img [src]="f.vistaPrevia" [alt]="f.archivo.name" />
+                  <button type="button" (click)="quitarFoto(i)" [attr.aria-label]="'Quitar ' + f.archivo.name">×</button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <label class="nr__check">
+          <input type="checkbox" formControlName="notificarPorCorreo" />
+          Notificarme por correo institucional sobre el avance de este reporte
+        </label>
+
+        <div class="nr__actions">
+          <button type="button" class="ru-btn-secondary" (click)="cancelar()" [disabled]="enviando()">Cancelar</button>
+          <button type="submit" class="ru-btn-primary" [disabled]="enviando()">
+            {{ enviando() ? 'Enviando…' : 'Enviar reporte' }}
+          </button>
+        </div>
+      </form>
+
+      <aside class="nr__side">
+        <section class="nr__card">
+          <h3>Consejos para un buen reporte</h3>
+          <ul>
+            <li>Toma la foto de cerca y con buena luz.</li>
+            <li>Indica el salón o espacio exacto.</li>
+            <li>Describe desde cuándo ocurre el daño.</li>
+            <li>Señala si hay riesgo para las personas.</li>
+          </ul>
+        </section>
+        <section class="nr__card">
+          <h3>¿Qué pasa después de enviarlo?</h3>
+          <ol>
+            <li><strong>Pendiente:</strong> tu reporte queda visible en Mis reportes.</li>
+            <li><strong>En proceso:</strong> mantenimiento lo atiende.</li>
+            <li><strong>Resuelto:</strong> recibes una notificación.</li>
+          </ol>
+        </section>
+      </aside>
+    </div>
+  }
 </div>
