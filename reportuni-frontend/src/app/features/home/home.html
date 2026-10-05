@@ -3,17 +3,18 @@
     <div>
       <h1>Resumen de reportes</h1>
       <p>
-        Hola{{ usuario()?.nombreCompleto ? ', ' + usuario()!.nombreCompleto : '' }}. Vista general de tu
-        actividad. Para ver, filtrar o buscar todos tus reportes, ve a
-        <a routerLink="/mis-reportes">Mis reportes</a>.
+        Hola{{ usuario()?.nombreCompleto ? ', ' + usuario()!.nombreCompleto : '' }}. Vista general de
+        todos los reportes registrados en la plataforma. Para cambiar estado, prioridad o asignar
+        un reporte, ve a <a routerLink="/admin/reportes">Reportes (gestión)</a>.
       </p>
     </div>
-    <a routerLink="/nuevo-reporte" class="ru-btn-primary ru-home__nuevo">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
+    <a routerLink="/admin/reportes" class="ru-btn-primary ru-home__nuevo">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path>
+        <path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path>
+        <path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path>
       </svg>
-      Nuevo reporte
+      Ir a gestión
     </a>
   </div>
 
@@ -61,9 +62,9 @@
       <div class="ru-panel__header">
         <div>
           <h2>Últimos {{ ultimosReportes.length }} reportes</h2>
-          <p>Solo tus movimientos más recientes. El listado completo con filtros está en "Mis reportes".</p>
+          <p>Los movimientos más recientes de todo el campus. Para gestionarlos, filtrarlos o cambiar su estado, ve a "Reportes (gestión)".</p>
         </div>
-        <a routerLink="/mis-reportes" class="ru-home__ver-todos">Ver mis {{ totales.total }} reportes →</a>
+        <a routerLink="/admin/reportes" class="ru-home__ver-todos">Ver los {{ totales.total }} reportes →</a>
       </div>
 
       <table class="ru-tabla">
@@ -98,11 +99,11 @@
 
     <aside class="ru-home__aside">
       <section class="ru-panel ru-home__ayuda">
-        <h2>Guías y ayuda</h2>
+        <h2>Acciones rápidas</h2>
         <ul>
-          <li>Guía de uso — Módulo Reportes: <a href="#">Selecciona aquí</a></li>
-          <li>Cómo tomar buenas fotos del daño: <a href="#">Ver guía</a></li>
-          <li>Video: reportar un daño paso a paso: <a href="#">Vídeo aquí</a></li>
+          <li><a routerLink="/admin/reportes">Ver reportes pendientes</a></li>
+          <li><a routerLink="/admin/reportes">Asignar o cambiar prioridad</a></li>
+          <li><a routerLink="/admin/reportes">Marcar reportes como resueltos</a></li>
         </ul>
       </section>
 
@@ -112,8 +113,8 @@
           <h2>Consejo rápido</h2>
         </div>
         <p>
-          Adjunta al menos una fotografía clara y describe puntos de referencia cercanos (salón,
-          pasillo, piso). Así el equipo de mantenimiento ubica el daño más rápido.
+          Prioriza los reportes con daños de alta prioridad y los más antiguos sin atender. El
+          filtro por estado y prioridad está disponible en "Reportes (gestión)".
         </p>
       </section>
 

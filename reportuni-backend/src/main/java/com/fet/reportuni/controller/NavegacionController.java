@@ -8,11 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Expone la navegacion base para el usuario autenticado. El filtro JWT
- * coloca el Usuario ya resuelto en el contexto de seguridad, por lo que
- * aqui simplemente se usa @AuthenticationPrincipal para obtenerlo.
- */
 @RestController
 @RequestMapping("/api/navegacion")
 public class NavegacionController {

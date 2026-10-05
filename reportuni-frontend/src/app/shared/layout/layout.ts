@@ -5,12 +5,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { NavegacionService } from '../../core/services/navegacion.service';
 import { MenuItem } from '../../core/models/navegacion.model';
 
-/**
- * Layout base de la plataforma (header + sub-navegación + contenido +
- * footer). Es una unica plantilla: en pantallas angostas el header
- * cambia a la variante compacta con boton de menu, en vez de existir
- * una app movil aparte, tal como se definio con el usuario.
- */
 @Component({
   selector: 'app-layout',
   standalone: true,

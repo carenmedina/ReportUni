@@ -12,12 +12,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Genera y valida el token de sesion emitido tras un login institucional
- * exitoso. Es intencionalmente simple (HMAC, sin refresh tokens todavia):
- * el objetivo de la Semana 3 es tener autenticacion funcional, no un
- * esquema de seguridad completo.
- */
 @Service
 public class JwtService {
 

@@ -1,11 +1,5 @@
 import { Reporte } from './reporte.model';
 
-/**
- * Datos de ejemplo para las pantallas de Resumen y Mis reportes, mientras
- * el backend expone los endpoints de reportes (fuera del compromiso de
- * la Semana 3, que cubrio solo autenticacion + navegacion base + MySQL
- * local). Se mantienen coherentes con los mockups aprobados.
- */
 export const REPORTES_EJEMPLO: Reporte[] = [
   { id: '0231', tipo: 'Fuga de agua', ubicacion: 'Bloque A · Salón 204', fecha: '14 sept.', estado: 'RESUELTO', prioridad: 'ALTA' },
   { id: '0230', tipo: 'Videobeam dañado', ubicacion: 'Bloque C · Auditorio', fecha: '16 sept.', estado: 'EN_PROCESO', prioridad: 'MEDIA' },

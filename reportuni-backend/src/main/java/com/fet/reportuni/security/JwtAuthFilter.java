@@ -18,11 +18,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Revisa el header "Authorization: Bearer <token>" en cada request.
- * Si el token es valido, autentica al usuario en el contexto de Spring
- * Security para esa peticion (sin sesion, stateless).
- */
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -69,9 +64,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception ex) {
-            // Token invalido, expirado o mal formado: se deja la peticion sin
-            // autenticar y Spring Security se encarga de rechazarla mas adelante
-            // si el endpoint lo requiere.
             SecurityContextHolder.clearContext();
         }
 
