@@ -44,6 +44,11 @@ public class ReporteExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage()));
     }
 
+    @ExceptionHandler(ReporteService.ReporteNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> noEncontrado(ReporteService.ReporteNoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
+    }
+
     @ExceptionHandler(AlmacenamientoFotosService.AlmacenamientoException.class)
     public ResponseEntity<ErrorResponse> errorDeAlmacenamiento(AlmacenamientoFotosService.AlmacenamientoException ex) {
         log.error("Error almacenando fotografias de un reporte", ex);
