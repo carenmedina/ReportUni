@@ -27,6 +27,13 @@ export const routes: Routes = [
         canActivate: [roleGuard(['ESTUDIANTE'])],
         loadComponent: () => import('./features/mis-reportes/mis-reportes').then((m) => m.MisReportes),
       },
+
+     {
+        path: 'mis-reportes/:id',
+        canActivate: [roleGuard(['ESTUDIANTE'])],
+        loadComponent: () => import('./features/detalle-reporte/detalle-reporte').then((m) => m.DetalleReporte),
+      },
+      
       {
         path: 'nuevo-reporte',
         canActivate: [roleGuard(['ESTUDIANTE'])],

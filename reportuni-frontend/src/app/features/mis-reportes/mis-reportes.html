@@ -25,7 +25,7 @@
         </svg>
         <input
           type="text"
-          placeholder="Buscar por ID, salón o descripción..."
+          placeholder="Buscar por ID, tipo o ubicación..."
           [value]="busqueda()"
           (input)="actualizarBusqueda($any($event.target).value)"
         />
@@ -42,44 +42,58 @@
       <span class="ru-toolbar__count">{{ reportesFiltrados().length }} resultados</span>
     </div>
 
-    <table class="ru-tabla">
-      <tr>
-        <td class="ru-th" style="width: 70px;">ID</td>
-        <td class="ru-th">Tipo de daño</td>
-        <td class="ru-th">Ubicación</td>
-        <td class="ru-th" style="width: 100px;">Fecha</td>
-        <td class="ru-th" style="width: 120px;">Estado</td>
-        <td class="ru-th" style="width: 90px;">Prioridad</td>
-        <td class="ru-th" style="width: 90px;"></td>
-      </tr>
-      @for (reporte of reportesFiltrados(); track reporte.id) {
+    @if (cargando()) {
+      <p class="ru-estado">Cargando tus reportes...</p>
+    } @else if (error()) {
+      <div class="ru-estado ru-estado--error">
+        <p>{{ error() }}</p>
+        <button type="button" class="ru-btn-reintentar" (click)="cargar()">Reintentar</button>
+      </div>
+    } @else if (reportes().length === 0) {
+      <div class="ru-estado">
+        <p>Aún no has creado reportes.</p>
+        <a routerLink="/nuevo-reporte">Crear mi primer reporte</a>
+      </div>
+    } @else {
+      <table class="ru-tabla">
         <tr>
-          <td class="ru-td ru-td--muted">{{ reporte.id }}</td>
-          <td class="ru-td">{{ reporte.tipo }}</td>
-          <td class="ru-td">{{ reporte.ubicacion }}</td>
-          <td class="ru-td">{{ reporte.fecha }}</td>
-          <td class="ru-td">
-            <span
-              class="ru-badge"
-              [class.ru-badge--resuelto]="reporte.estado === 'RESUELTO'"
-              [class.ru-badge--proceso]="reporte.estado === 'EN_PROCESO'"
-              [class.ru-badge--pendiente]="reporte.estado === 'PENDIENTE'"
-            >
-              ● {{ etiquetaEstado(reporte.estado) }}
-            </span>
-          </td>
-          <td class="ru-td">
-            <span class="ru-prioridad" [class.ru-prioridad--alta]="reporte.prioridad === 'ALTA'">
-              {{ etiquetaPrioridad(reporte.prioridad) }}
-            </span>
-          </td>
-          <td class="ru-td"><a routerLink="/mis-reportes">Ver detalle</a></td>
+          <td class="ru-th" style="width: 70px;">ID</td>
+          <td class="ru-th">Tipo de daño</td>
+          <td class="ru-th">Ubicación</td>
+          <td class="ru-th" style="width: 100px;">Fecha</td>
+          <td class="ru-th" style="width: 120px;">Estado</td>
+          <td class="ru-th" style="width: 90px;">Prioridad</td>
+          <td class="ru-th" style="width: 90px;"></td>
         </tr>
-      } @empty {
-        <tr>
-          <td class="ru-td" colspan="7">No se encontraron reportes con ese criterio.</td>
-        </tr>
-      }
-    </table>
+        @for (reporte of reportesFiltrados(); track reporte.id) {
+          <tr>
+            <td class="ru-td ru-td--muted">#{{ reporte.codigo }}</td>
+            <td class="ru-td">{{ etiquetaTipoDano(reporte.tipoDano) }}</td>
+            <td class="ru-td">{{ ubicacion(reporte) }}</td>
+            <td class="ru-td">{{ fecha(reporte) }}</td>
+            <td class="ru-td">
+              <span
+                class="ru-badge"
+                [class.ru-badge--resuelto]="reporte.estado === 'RESUELTO'"
+                [class.ru-badge--proceso]="reporte.estado === 'EN_PROCESO'"
+                [class.ru-badge--pendiente]="reporte.estado === 'PENDIENTE'"
+              >
+                ● {{ etiquetaEstado(reporte.estado) }}
+              </span>
+            </td>
+            <td class="ru-td">
+              <span class="ru-prioridad" [class.ru-prioridad--alta]="reporte.prioridadEstimada === 'ALTA'">
+                {{ etiquetaPrioridad(reporte.prioridadEstimada) }}
+              </span>
+            </td>
+            <td class="ru-td"><a [routerLink]="['/mis-reportes', reporte.id]">Ver detalle</a></td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="ru-td" colspan="7">No se encontraron reportes con ese criterio.</td>
+          </tr>
+        }
+      </table>
+    }
   </section>
 </div>

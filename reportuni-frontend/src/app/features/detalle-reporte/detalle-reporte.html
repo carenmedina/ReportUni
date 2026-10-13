@@ -1,0 +1,117 @@
+<div class="ru-detalle">
+  <nav class="ru-detalle__migas">
+    <a routerLink="/mis-reportes">Mis reportes</a>
+    <span>›</span>
+    <span>{{ reporte() ? '#' + reporte()!.codigo : 'Detalle' }}</span>
+  </nav>
+
+  @if (cargando()) {
+    <p class="ru-detalle__estado">Cargando el reporte...</p>
+  } @else if (error()) {
+    <div class="ru-detalle__estado ru-detalle__estado--error">
+      <p>{{ error() }}</p>
+      <a routerLink="/mis-reportes">Volver a mis reportes</a>
+    </div>
+  } @else if (reporte(); as r) {
+    <div class="ru-detalle__encabezado">
+      <div>
+        <h1>{{ etiquetaTipoDano(r.tipoDano) }} — Reporte #{{ r.codigo }}</h1>
+        <p>{{ ubicacionTexto(r.bloque, r.espacioEspecifico) }} · Creado el {{ fecha(r) }}</p>
+      </div>
+      <span
+        class="ru-badge"
+        [class.ru-badge--resuelto]="r.estado === 'RESUELTO'"
+        [class.ru-badge--proceso]="r.estado === 'EN_PROCESO'"
+        [class.ru-badge--pendiente]="r.estado === 'PENDIENTE'"
+      >
+        ● {{ etiquetaEstado(r.estado) }}
+      </span>
+    </div>
+
+    <div class="ru-detalle__cuerpo">
+      <div class="ru-detalle__principal">
+        <section class="ru-tarjeta">
+          <h2>Fotografías adjuntas</h2>
+          <div class="ru-fotos">
+            @for (foto of r.fotos; track foto.id) {
+              <figure class="ru-foto">
+                @if (fotosUrl()[foto.id]; as url) {
+                  <button type="button" class="ru-foto__boton" (click)="ampliar(url)" title="Ampliar">
+                    <img [src]="url" [alt]="foto.nombreOriginal" />
+                  </button>
+                } @else if (fotosConError()[foto.id]) {
+                  <div class="ru-foto__vacia">No se pudo cargar</div>
+                } @else {
+                  <div class="ru-foto__vacia">Cargando...</div>
+                }
+                <figcaption>{{ foto.nombreOriginal }} · {{ tamano(foto.tamanoBytes) }}</figcaption>
+              </figure>
+            } @empty {
+              <p class="ru-detalle__nota">Este reporte no tiene fotografías.</p>
+            }
+          </div>
+        </section>
+
+        <section class="ru-tarjeta">
+          <h2>Descripción del daño</h2>
+          <p class="ru-descripcion">{{ r.descripcion }}</p>
+        </section>
+
+        <section class="ru-tarjeta">
+          <h2>Ubicación</h2>
+          <p class="ru-detalle__dato">{{ ubicacionTexto(r.bloque, r.espacioEspecifico) }}</p>
+          @if (tieneUbicacionGps(r)) {
+            <p class="ru-detalle__nota">
+              Coordenadas GPS: {{ r.latitud }}, {{ r.longitud }} ·
+              <a [href]="enlaceMapa(r)" target="_blank" rel="noopener noreferrer">Ver en el mapa</a>
+            </p>
+          } @else {
+            <p class="ru-detalle__nota">No se registró ubicación GPS.</p>
+          }
+        </section>
+      </div>
+
+      <aside class="ru-detalle__lateral">
+        <section class="ru-tarjeta">
+          <h2>Estado del reporte</h2>
+          <ol class="ru-linea">
+            <li class="ru-linea__paso ru-linea__paso--hecho">
+              <strong>Reporte enviado</strong>
+              <span>{{ fecha(r) }}</span>
+            </li>
+            <li
+              class="ru-linea__paso"
+              [class.ru-linea__paso--hecho]="r.estado === 'EN_PROCESO' || r.estado === 'RESUELTO'"
+            >
+              <strong>En proceso</strong>
+            </li>
+            <li class="ru-linea__paso" [class.ru-linea__paso--hecho]="r.estado === 'RESUELTO'">
+              <strong>Resuelto</strong>
+            </li>
+          </ol>
+        </section>
+
+        <section class="ru-tarjeta">
+          <h2>Detalles del reporte</h2>
+          <dl class="ru-datos">
+            <dt>Reportado por</dt>
+            <dd>{{ r.reportadoPor }}</dd>
+            <dt>Tipo de daño</dt>
+            <dd>{{ etiquetaTipoDano(r.tipoDano) }}</dd>
+            <dt>Prioridad</dt>
+            <dd>{{ etiquetaPrioridad(r.prioridadEstimada) }}</dd>
+            <dt>Notificación por correo</dt>
+            <dd>{{ r.notificarPorCorreo ? 'Sí' : 'No' }}</dd>
+          </dl>
+        </section>
+      </aside>
+    </div>
+  }
+
+  @if (fotoAmpliada(); as ampliada) {
+    <div class="ru-visor" (click)="cerrarAmpliada()" role="dialog" aria-label="Fotografía ampliada">
+      <button type="button" class="ru-visor__cerrar" (click)="cerrarAmpliada()">Cerrar ✕</button>
+      <img [src]="ampliada" alt="Fotografía ampliada del reporte" (click)="$event.stopPropagation()" />
+    </div>
+  }
+</div>
