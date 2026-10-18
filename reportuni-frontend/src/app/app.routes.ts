@@ -40,9 +40,15 @@ export const routes: Routes = [
         loadComponent: () => import('./features/nuevo-reporte/nuevo-reporte').then((m) => m.NuevoReporte),
       },
       {
-        path: 'admin/reportes/:id',
+        path: 'admin/reportes',
         canActivate: [roleGuard(['ADMINISTRADOR'])],
         loadComponent: () => import('./features/admin-reportes/admin-reportes').then((m) => m.AdminReportes),
+      },
+      {
+        path: 'admin/reportes/:id',
+        canActivate: [roleGuard(['ADMINISTRADOR'])],
+        data: { volverA: '/admin/reportes', volverTexto: 'Reportes (gestión)' },
+        loadComponent: () => import('./features/detalle-reporte/detalle-reporte').then((m) => m.DetalleReporte),
       },
     ],
   },
