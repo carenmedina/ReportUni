@@ -1,5 +1,7 @@
 package com.fet.reportuni.repository;
 
+import com.fet.reportuni.model.EstadoReporte;
+import com.fet.reportuni.model.PrioridadReporte;
 import com.fet.reportuni.model.Reporte;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +19,12 @@ public interface ReporteRepository extends JpaRepository<Reporte, Long> {
 
     @EntityGraph(attributePaths = "fotos")
     Optional<Reporte> findConFotosByIdAndUsuarioId(Long id, Long usuarioId);
+
+    // Semana 6 (panel de administrador): todos los reportes con su autor en una sola consulta
+    @EntityGraph(attributePaths = "usuario")
+    List<Reporte> findAllByOrderByFechaCreacionDesc();
+
+    long countByEstado(EstadoReporte estado);
+
+    long countByEstadoAndPrioridadEstimada(EstadoReporte estado, PrioridadReporte prioridad);
 }
