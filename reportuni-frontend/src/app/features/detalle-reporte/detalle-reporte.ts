@@ -24,6 +24,10 @@ export class DetalleReporte implements OnDestroy {
   private readonly servicio = inject(ReporteConsultaService);
   private readonly ruta = inject(ActivatedRoute);
 
+  // La misma pantalla sirve al estudiante y al administrador: la ruta indica a donde volver
+  readonly volverA: string = this.ruta.snapshot.data['volverA'] ?? '/mis-reportes';
+  readonly volverTexto: string = this.ruta.snapshot.data['volverTexto'] ?? 'Mis reportes';
+
   readonly reporte = signal<ReporteDetalle | null>(null);
   readonly cargando = signal(true);
   readonly error = signal<string | null>(null);

@@ -1,6 +1,6 @@
 <div class="ru-detalle">
   <nav class="ru-detalle__migas">
-    <a routerLink="/mis-reportes">Mis reportes</a>
+    <a [routerLink]="volverA">{{ volverTexto }}</a>
     <span>›</span>
     <span>{{ reporte() ? '#' + reporte()!.codigo : 'Detalle' }}</span>
   </nav>
@@ -10,7 +10,7 @@
   } @else if (error()) {
     <div class="ru-detalle__estado ru-detalle__estado--error">
       <p>{{ error() }}</p>
-      <a routerLink="/mis-reportes">Volver a mis reportes</a>
+      <a [routerLink]="volverA">Volver a {{ volverTexto }}</a>
     </div>
   } @else if (reporte(); as r) {
     <div class="ru-detalle__encabezado">

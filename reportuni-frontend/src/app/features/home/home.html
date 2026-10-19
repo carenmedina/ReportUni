@@ -4,7 +4,7 @@
       <h1>Resumen de reportes</h1>
       <p>
         Hola{{ usuario()?.nombreCompleto ? ', ' + usuario()!.nombreCompleto : '' }}. Vista general de
-        todos los reportes registrados en la plataforma. Para cambiar estado, prioridad o asignar
+        todos los reportes registrados en la plataforma. Para buscar, filtrar o revisar el detalle de
         un reporte, ve a <a routerLink="/admin/reportes">Reportes (gestión)</a>.
       </p>
     </div>
@@ -24,7 +24,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"></path><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.5 0 2.9.37 4.14 1.02"></path><path d="M21 5l-9 9"></path></svg>
       </div>
       <div>
-        <div class="ru-statcard__num">{{ totales.total }}</div>
+        <div class="ru-statcard__num">{{ (resumen()?.total ?? 0) }}</div>
         <div class="ru-statcard__label">Reportes totales</div>
       </div>
     </div>
@@ -33,7 +33,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
       </div>
       <div>
-        <div class="ru-statcard__num">{{ totales.pendientes }}</div>
+        <div class="ru-statcard__num">{{ (resumen()?.pendientes ?? 0) }}</div>
         <div class="ru-statcard__label">Pendientes</div>
       </div>
     </div>
@@ -42,7 +42,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3.5-7.1"></path><polyline points="21 3 21 8 16 8"></polyline></svg>
       </div>
       <div>
-        <div class="ru-statcard__num">{{ totales.enProceso }}</div>
+        <div class="ru-statcard__num">{{ (resumen()?.enProceso ?? 0) }}</div>
         <div class="ru-statcard__label">En proceso</div>
       </div>
     </div>
@@ -51,7 +51,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       </div>
       <div>
-        <div class="ru-statcard__num">{{ totales.resueltos }}</div>
+        <div class="ru-statcard__num">{{ (resumen()?.resueltos ?? 0) }}</div>
         <div class="ru-statcard__label">Resueltos</div>
       </div>
     </div>
@@ -61,49 +61,63 @@
     <section class="ru-panel ru-home__tabla">
       <div class="ru-panel__header">
         <div>
-          <h2>Últimos {{ ultimosReportes.length }} reportes</h2>
-          <p>Los movimientos más recientes de todo el campus. Para gestionarlos, filtrarlos o cambiar su estado, ve a "Reportes (gestión)".</p>
+          <h2>Últimos reportes</h2>
+          <p>Los reportes más recientes de todo el campus. Para buscarlos o filtrarlos, ve a "Reportes (gestión)".</p>
         </div>
-        <a routerLink="/admin/reportes" class="ru-home__ver-todos">Ver los {{ totales.total }} reportes →</a>
+        <a routerLink="/admin/reportes" class="ru-home__ver-todos">Ver los {{ (resumen()?.total ?? 0) }} reportes →</a>
       </div>
 
-      <table class="ru-tabla">
-        <tr>
-          <td class="ru-th" style="width: 70px;">ID</td>
-          <td class="ru-th">Tipo de daño</td>
-          <td class="ru-th">Ubicación</td>
-          <td class="ru-th" style="width: 90px;">Fecha</td>
-          <td class="ru-th" style="width: 120px;">Estado</td>
-        </tr>
-        @for (reporte of ultimosReportes; track reporte.id) {
+      @if (cargando()) {
+        <p style="text-align: center; padding: 24px 0; font-size: 13.5px; color: #666666;">Cargando reportes...</p>
+      } @else if (error()) {
+        <div style="text-align: center; padding: 24px 0; font-size: 13.5px; color: #c0392b;">
+          <p>{{ error() }}</p>
+          <button type="button" class="ru-btn-secondary" (click)="cargar()">Reintentar</button>
+        </div>
+      } @else {
+        <table class="ru-tabla">
           <tr>
-            <td class="ru-td ru-td--muted">{{ reporte.id }}</td>
-            <td class="ru-td">{{ reporte.tipo }}</td>
-            <td class="ru-td">{{ reporte.ubicacion }}</td>
-            <td class="ru-td">{{ reporte.fecha }}</td>
-            <td class="ru-td">
-              <span
-                class="ru-badge"
-                [class.ru-badge--resuelto]="reporte.estado === 'RESUELTO'"
-                [class.ru-badge--proceso]="reporte.estado === 'EN_PROCESO'"
-                [class.ru-badge--pendiente]="reporte.estado === 'PENDIENTE'"
-              >
-                ●
-                {{ reporte.estado === 'RESUELTO' ? 'Resuelto' : reporte.estado === 'EN_PROCESO' ? 'En proceso' : 'Pendiente' }}
-              </span>
-            </td>
+            <td class="ru-th" style="width: 70px;">ID</td>
+            <td class="ru-th">Tipo de daño</td>
+            <td class="ru-th">Ubicación</td>
+            <td class="ru-th">Reportado por</td>
+            <td class="ru-th" style="width: 90px;">Fecha</td>
+            <td class="ru-th" style="width: 120px;">Estado</td>
           </tr>
-        }
-      </table>
+          @for (reporte of resumen()?.recientes ?? []; track reporte.id) {
+            <tr>
+              <td class="ru-td ru-td--muted"><a [routerLink]="['/admin/reportes', reporte.id]">#{{ reporte.codigo }}</a></td>
+              <td class="ru-td">{{ etiquetaTipoDano(reporte.tipoDano) }}</td>
+              <td class="ru-td">{{ ubicacionTexto(reporte.bloque, reporte.espacioEspecifico) }}</td>
+              <td class="ru-td">{{ reporte.reportadoPor }}</td>
+              <td class="ru-td">{{ formatearFecha(reporte.fechaCreacion) }}</td>
+              <td class="ru-td">
+                <span
+                  class="ru-badge"
+                  [class.ru-badge--resuelto]="reporte.estado === 'RESUELTO'"
+                  [class.ru-badge--proceso]="reporte.estado === 'EN_PROCESO'"
+                  [class.ru-badge--pendiente]="reporte.estado === 'PENDIENTE'"
+                >
+                  ● {{ etiquetaEstado(reporte.estado) }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td class="ru-td" colspan="6">Todavía no hay reportes registrados.</td>
+            </tr>
+          }
+        </table>
+      }
     </section>
 
     <aside class="ru-home__aside">
       <section class="ru-panel ru-home__ayuda">
         <h2>Acciones rápidas</h2>
         <ul>
-          <li><a routerLink="/admin/reportes">Ver reportes pendientes</a></li>
-          <li><a routerLink="/admin/reportes">Asignar o cambiar prioridad</a></li>
-          <li><a routerLink="/admin/reportes">Marcar reportes como resueltos</a></li>
+          <li><a routerLink="/admin/reportes">Ver todos los reportes</a></li>
+          <li><a routerLink="/admin/reportes">Buscar por estudiante o ubicación</a></li>
+          <li><a routerLink="/admin/reportes">Filtrar por estado y prioridad</a></li>
         </ul>
       </section>
 
@@ -113,8 +127,8 @@
           <h2>Consejo rápido</h2>
         </div>
         <p>
-          Prioriza los reportes con daños de alta prioridad y los más antiguos sin atender. El
-          filtro por estado y prioridad está disponible en "Reportes (gestión)".
+          Hay {{ resumen()?.altaPrioridadPendientes ?? 0 }} reporte(s) de alta prioridad pendientes de
+          atención. Puedes verlos filtrando por estado y prioridad en "Reportes (gestión)".
         </p>
       </section>
 

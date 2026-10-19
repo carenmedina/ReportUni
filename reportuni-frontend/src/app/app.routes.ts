@@ -40,7 +40,7 @@ export const routes: Routes = [
         loadComponent: () => import('./features/nuevo-reporte/nuevo-reporte').then((m) => m.NuevoReporte),
       },
       {
-        path: 'admin/reportes',
+        path: 'admin/reportes/:id',
         canActivate: [roleGuard(['ADMINISTRADOR'])],
         loadComponent: () => import('./features/admin-reportes/admin-reportes').then((m) => m.AdminReportes),
       },

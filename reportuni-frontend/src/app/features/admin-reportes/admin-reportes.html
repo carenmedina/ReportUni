@@ -1,15 +1,119 @@
-<div class="ru-placeholder">
-  <div class="ru-placeholder__icon">
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M9 12l2 2 4-4"></path>
-      <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.5 0 2.9.37 4.14 1.02"></path>
-      <path d="M21 5l-9 9"></path>
-    </svg>
+<div class="ru-admin">
+  <div class="ru-admin__heading">
+    <div>
+      <h1>Reportes (gestión)</h1>
+      <p>
+        Todos los reportes registrados en la plataforma. Busca por código, ubicación, descripción o
+        por quien reportó, y filtra por estado, prioridad, tipo de daño o bloque.
+      </p>
+    </div>
   </div>
-  <h1>Reportes (gestión)</h1>
-  <p>
-    Vista exclusiva del administrador para asignar y modificar la prioridad de los reportes y
-    dar seguimiento a su estado. Se implementa junto con el módulo de reportes, en la siguiente
-    etapa del cronograma.
-  </p>
+
+  <section class="ru-panel">
+    <div class="ru-toolbar">
+      <div class="ru-toolbar__buscar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8F91" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          placeholder="Buscar por código, ubicación o estudiante..."
+          [value]="filtros().q"
+          (input)="cambiarBusqueda($any($event.target).value)"
+        />
+      </div>
+
+      <select class="ru-select" [value]="filtros().estado" (change)="cambiarFiltro('estado', $any($event.target).value)">
+        <option value="TODOS">Todos los estados</option>
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="EN_PROCESO">En proceso</option>
+        <option value="RESUELTO">Resuelto</option>
+      </select>
+
+      <select class="ru-select" [value]="filtros().prioridad" (change)="cambiarFiltro('prioridad', $any($event.target).value)">
+        <option value="TODAS">Todas las prioridades</option>
+        <option value="ALTA">Alta</option>
+        <option value="MEDIA">Media</option>
+        <option value="BAJA">Baja</option>
+      </select>
+
+      <select class="ru-select" [value]="filtros().tipoDano" (change)="cambiarFiltro('tipoDano', $any($event.target).value)">
+        <option value="TODOS">Todos los tipos</option>
+        @for (tipo of opcionesTipo; track tipo.valor) {
+          <option [value]="tipo.valor">{{ tipo.etiqueta }}</option>
+        }
+      </select>
+
+      <select class="ru-select" [value]="filtros().bloque" (change)="cambiarFiltro('bloque', $any($event.target).value)">
+        <option value="TODOS">Todos los bloques</option>
+        @for (bloque of opcionesBloque; track bloque.valor) {
+          <option [value]="bloque.valor">{{ bloque.etiqueta }}</option>
+        }
+      </select>
+
+      @if (hayFiltros()) {
+        <button type="button" class="ru-btn-limpiar" (click)="limpiarFiltros()">Limpiar filtros</button>
+      }
+
+      <span class="ru-toolbar__spacer"></span>
+      <span class="ru-toolbar__count">{{ reportes().length }} resultados</span>
+    </div>
+
+    @if (cargando()) {
+      <p class="ru-estado">Cargando reportes...</p>
+    } @else if (error()) {
+      <div class="ru-estado ru-estado--error">
+        <p>{{ error() }}</p>
+        <button type="button" class="ru-btn-limpiar" (click)="cargar()">Reintentar</button>
+      </div>
+    } @else {
+      <table class="ru-tabla">
+        <tr>
+          <td class="ru-th" style="width: 70px;">ID</td>
+          <td class="ru-th">Tipo de daño</td>
+          <td class="ru-th">Ubicación</td>
+          <td class="ru-th">Reportado por</td>
+          <td class="ru-th" style="width: 90px;">Fecha</td>
+          <td class="ru-th" style="width: 110px;">Estado</td>
+          <td class="ru-th" style="width: 80px;">Prioridad</td>
+          <td class="ru-th" style="width: 90px;"></td>
+        </tr>
+        @for (reporte of reportes(); track reporte.id) {
+          <tr>
+            <td class="ru-td ru-td--muted">#{{ reporte.codigo }}</td>
+            <td class="ru-td">{{ etiquetaTipoDano(reporte.tipoDano) }}</td>
+            <td class="ru-td">{{ ubicacion(reporte) }}</td>
+            <td class="ru-td">
+              {{ reporte.reportadoPor }}
+              <div class="ru-td__sub">{{ reporte.reportadoPorCorreo }}</div>
+            </td>
+            <td class="ru-td">{{ fecha(reporte) }}</td>
+            <td class="ru-td">
+              <span
+                class="ru-badge"
+                [class.ru-badge--resuelto]="reporte.estado === 'RESUELTO'"
+                [class.ru-badge--proceso]="reporte.estado === 'EN_PROCESO'"
+                [class.ru-badge--pendiente]="reporte.estado === 'PENDIENTE'"
+              >
+                ● {{ etiquetaEstado(reporte.estado) }}
+              </span>
+            </td>
+            <td class="ru-td">
+              <span class="ru-prioridad" [class.ru-prioridad--alta]="reporte.prioridadEstimada === 'ALTA'">
+                {{ etiquetaPrioridad(reporte.prioridadEstimada) }}
+              </span>
+            </td>
+            <td class="ru-td"><a [routerLink]="['/admin/reportes', reporte.id]">Ver detalle</a></td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="ru-td" colspan="8">
+              {{ hayFiltros() ? 'No hay reportes que coincidan con los filtros.' : 'Todavía no hay reportes registrados.' }}
+            </td>
+          </tr>
+        }
+      </table>
+    }
+  </section>
 </div>
