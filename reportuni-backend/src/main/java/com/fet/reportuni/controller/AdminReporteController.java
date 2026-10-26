@@ -8,8 +8,10 @@ import com.fet.reportuni.model.Bloque;
 import com.fet.reportuni.model.EstadoReporte;
 import com.fet.reportuni.model.PrioridadReporte;
 import com.fet.reportuni.model.TipoDano;
+import com.fet.reportuni.model.Usuario;
 import com.fet.reportuni.service.AdminReporteService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,17 +50,19 @@ public class AdminReporteController {
 
     @PutMapping("/{id}/estado")
     public AdminReporteItem cambiarEstado(
+            @AuthenticationPrincipal Usuario actor,
             @PathVariable("id") Long id,
             @Valid @RequestBody CambiarEstadoRequest datos
     ) {
-        return adminReporteService.cambiarEstado(id, datos.estado());
+        return adminReporteService.cambiarEstado(actor, id, datos.estado());
     }
 
     @PutMapping("/{id}/prioridad")
     public AdminReporteItem cambiarPrioridad(
+            @AuthenticationPrincipal Usuario actor,
             @PathVariable("id") Long id,
             @Valid @RequestBody CambiarPrioridadRequest datos
     ) {
-        return adminReporteService.cambiarPrioridad(id, datos.prioridad());
+        return adminReporteService.cambiarPrioridad(actor, id, datos.prioridad());
     }
 }

@@ -28,7 +28,7 @@ class AdminReporteServiceTest {
 
     @BeforeEach
     void preparar() {
-        servicio = new AdminReporteService(reporteRepository);
+        servicio = new AdminReporteService(reporteRepository, org.mockito.Mockito.mock(SeguimientoService.class));
 
         Usuario uno = Usuario.builder().id(1L).nombreCompleto("Estudiante Uno")
                 .correoInstitucional("estudiante1@fet.edu.co").passwordHash("x").rol(Rol.ESTUDIANTE).build();

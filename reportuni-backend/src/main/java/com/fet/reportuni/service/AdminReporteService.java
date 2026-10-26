@@ -7,6 +7,7 @@ import com.fet.reportuni.model.EstadoReporte;
 import com.fet.reportuni.model.PrioridadReporte;
 import com.fet.reportuni.model.Reporte;
 import com.fet.reportuni.model.TipoDano;
+import com.fet.reportuni.model.Usuario;
 import com.fet.reportuni.repository.ReporteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +21,11 @@ public class AdminReporteService {
     private static final int CANTIDAD_RECIENTES = 5;
 
     private final ReporteRepository reporteRepository;
+    private final SeguimientoService seguimiento;
 
-    public AdminReporteService(ReporteRepository reporteRepository) {
+    public AdminReporteService(ReporteRepository reporteRepository, SeguimientoService seguimiento) {
         this.reporteRepository = reporteRepository;
+        this.seguimiento = seguimiento;
     }
 
     public static class CambioInvalidoException extends RuntimeException {
@@ -33,11 +36,11 @@ public class AdminReporteService {
 
     /**
      * Semana 7: el administrador cambia el estado de un reporte. Se permite pasar a cualquier
-     * estado distinto del actual (incluido reabrir un reporte resuelto). El historial de cambios
-     * y las notificaciones al estudiante se construyen en la Semana 8.
+     * estado distinto del actual (incluido reabrir un reporte resuelto). Semana 8: cada cambio
+     * queda en el historial y se notifica al estudiante dueno del reporte.
      */
     @Transactional
-    public AdminReporteItem cambiarEstado(Long id, EstadoReporte nuevoEstado) {
+    public AdminReporteItem cambiarEstado(Usuario actor, Long id, EstadoReporte nuevoEstado) {
         Reporte reporte = buscar(id);
 
         if (reporte.getEstado() == nuevoEstado) {
@@ -45,13 +48,15 @@ public class AdminReporteService {
                     "El reporte ya está en estado " + etiqueta(nuevoEstado) + ".");
         }
 
+        EstadoReporte anterior = reporte.getEstado();
         reporte.setEstado(nuevoEstado);
         reporteRepository.save(reporte);
+        seguimiento.registrarCambioEstado(reporte, actor, anterior, nuevoEstado);
         return aItem(reporte);
     }
 
     @Transactional
-    public AdminReporteItem cambiarPrioridad(Long id, PrioridadReporte nuevaPrioridad) {
+    public AdminReporteItem cambiarPrioridad(Usuario actor, Long id, PrioridadReporte nuevaPrioridad) {
         Reporte reporte = buscar(id);
 
         if (reporte.getPrioridadEstimada() == nuevaPrioridad) {
@@ -59,8 +64,10 @@ public class AdminReporteService {
                     "El reporte ya tiene prioridad " + etiqueta(nuevaPrioridad) + ".");
         }
 
+        PrioridadReporte anterior = reporte.getPrioridadEstimada();
         reporte.setPrioridadEstimada(nuevaPrioridad);
         reporteRepository.save(reporte);
+        seguimiento.registrarCambioPrioridad(reporte, actor, anterior, nuevaPrioridad);
         return aItem(reporte);
     }
 

@@ -24,6 +24,9 @@ public interface ReporteRepository extends JpaRepository<Reporte, Long> {
     @EntityGraph(attributePaths = "usuario")
     List<Reporte> findAllByOrderByFechaCreacionDesc();
 
+    // Semana 8: comprobar que un estudiante es el dueno del reporte (sin traer las fotos)
+    boolean existsByIdAndUsuarioId(Long id, Long usuarioId);
+
     long countByEstado(EstadoReporte estado);
 
     long countByEstadoAndPrioridadEstimada(EstadoReporte estado, PrioridadReporte prioridad);

@@ -4,7 +4,11 @@ import com.fet.reportuni.dto.AdminReporteItem;
 import com.fet.reportuni.model.*;
 import com.fet.reportuni.service.AdminReporteService;
 import com.fet.reportuni.service.ReporteService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -14,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -28,6 +33,9 @@ class AdminReporteGestionControllerTest {
 
     private MockMvc mockMvc;
 
+    private final Usuario admin = Usuario.builder().id(9L).nombreCompleto("Admin")
+            .correoInstitucional("admin@fet.edu.co").passwordHash("x").rol(Rol.ADMINISTRADOR).build();
+
     private final AdminReporteItem item = new AdminReporteItem(
             7L, "0007", TipoDano.FUGA_AGUA, Bloque.BLOQUE_A, "Salon 204", PrioridadReporte.MEDIA,
             EstadoReporte.EN_PROCESO, "Estudiante Uno", "estudiante1@fet.edu.co",
@@ -35,14 +43,22 @@ class AdminReporteGestionControllerTest {
 
     @BeforeEach
     void preparar() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(admin, null, List.of()));
         mockMvc = MockMvcBuilders.standaloneSetup(new AdminReporteController(servicio))
                 .setControllerAdvice(new AdminReporteExceptionHandler())
+                .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .build();
+    }
+
+    @AfterEach
+    void limpiar() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
     void cambiaElEstado() throws Exception {
-        when(servicio.cambiarEstado(7L, EstadoReporte.EN_PROCESO)).thenReturn(item);
+        when(servicio.cambiarEstado(admin, 7L, EstadoReporte.EN_PROCESO)).thenReturn(item);
 
         mockMvc.perform(put("/api/admin/reportes/7/estado")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -54,7 +70,7 @@ class AdminReporteGestionControllerTest {
 
     @Test
     void cambiaLaPrioridad() throws Exception {
-        when(servicio.cambiarPrioridad(7L, PrioridadReporte.MEDIA)).thenReturn(item);
+        when(servicio.cambiarPrioridad(admin, 7L, PrioridadReporte.MEDIA)).thenReturn(item);
 
         mockMvc.perform(put("/api/admin/reportes/7/prioridad")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -83,7 +99,7 @@ class AdminReporteGestionControllerTest {
 
     @Test
     void mismoEstadoDevuelve400() throws Exception {
-        when(servicio.cambiarEstado(7L, EstadoReporte.PENDIENTE))
+        when(servicio.cambiarEstado(admin, 7L, EstadoReporte.PENDIENTE))
                 .thenThrow(new AdminReporteService.CambioInvalidoException("El reporte ya está en estado Pendiente."));
 
         mockMvc.perform(put("/api/admin/reportes/7/estado")
@@ -95,7 +111,7 @@ class AdminReporteGestionControllerTest {
 
     @Test
     void reporteInexistenteDevuelve404() throws Exception {
-        when(servicio.cambiarEstado(99L, EstadoReporte.RESUELTO))
+        when(servicio.cambiarEstado(admin, 99L, EstadoReporte.RESUELTO))
                 .thenThrow(new ReporteService.ReporteNoEncontradoException("No encontramos ese reporte."));
 
         mockMvc.perform(put("/api/admin/reportes/99/estado")
