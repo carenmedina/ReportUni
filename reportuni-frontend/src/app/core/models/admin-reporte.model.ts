@@ -22,6 +22,18 @@ export interface AdminResumen {
   recientes: AdminReporteItem[];
 }
 
+export const OPCIONES_ESTADO: { valor: EstadoReporte; etiqueta: string }[] = [
+  { valor: 'PENDIENTE', etiqueta: 'Pendiente' },
+  { valor: 'EN_PROCESO', etiqueta: 'En proceso' },
+  { valor: 'RESUELTO', etiqueta: 'Resuelto' },
+];
+
+export const OPCIONES_PRIORIDAD: { valor: PrioridadReporte; etiqueta: string }[] = [
+  { valor: 'ALTA', etiqueta: 'Alta' },
+  { valor: 'MEDIA', etiqueta: 'Media' },
+  { valor: 'BAJA', etiqueta: 'Baja' },
+];
+
 export interface FiltrosAdmin {
   q: string;
   estado: string; // 'TODOS' o un EstadoReporte

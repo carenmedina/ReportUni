@@ -72,6 +72,43 @@
       </div>
 
       <aside class="ru-detalle__lateral">
+        @if (gestionar) {
+          <section class="ru-tarjeta ru-gestion">
+            <h2>Gestionar reporte</h2>
+
+            <label class="ru-gestion__campo" for="gestion-estado">Estado</label>
+            <select
+              id="gestion-estado"
+              class="ru-gestion__select"
+              [disabled]="guardando()"
+              (change)="cambiarEstado($any($event.target))"
+            >
+              @for (op of opcionesEstado; track op.valor) {
+                <option [value]="op.valor" [selected]="op.valor === r.estado">{{ op.etiqueta }}</option>
+              }
+            </select>
+
+            <label class="ru-gestion__campo" for="gestion-prioridad">Prioridad</label>
+            <select
+              id="gestion-prioridad"
+              class="ru-gestion__select"
+              [disabled]="guardando()"
+              (change)="cambiarPrioridad($any($event.target))"
+            >
+              @for (op of opcionesPrioridad; track op.valor) {
+                <option [value]="op.valor" [selected]="op.valor === r.prioridadEstimada">{{ op.etiqueta }}</option>
+              }
+            </select>
+
+            @if (aviso(); as mensaje) {
+              <p class="ru-gestion__aviso" [class.ru-gestion__aviso--error]="mensaje.tipo === 'error'" role="status">
+                {{ mensaje.texto }}
+              </p>
+            }
+            <p class="ru-detalle__nota">El estudiante verá el nuevo estado en "Mis reportes".</p>
+          </section>
+        }
+
         <section class="ru-tarjeta">
           <h2>Estado del reporte</h2>
           <ol class="ru-linea">

@@ -47,7 +47,7 @@ export const routes: Routes = [
       {
         path: 'admin/reportes/:id',
         canActivate: [roleGuard(['ADMINISTRADOR'])],
-        data: { volverA: '/admin/reportes', volverTexto: 'Reportes (gestión)' },
+        data: { volverA: '/admin/reportes', volverTexto: 'Reportes (gestión)', gestionar: true },
         loadComponent: () => import('./features/detalle-reporte/detalle-reporte').then((m) => m.DetalleReporte),
       },
     ],

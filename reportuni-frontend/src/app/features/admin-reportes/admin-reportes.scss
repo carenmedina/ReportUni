@@ -195,3 +195,54 @@
 .ru-estado--error {
   color: #c0392b;
 }
+.ru-select-estado,
+.ru-select-prioridad {
+  border: 1px solid var(--ru-border-input);
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  background: #ffffff;
+  color: #444444;
+  cursor: pointer;
+}
+
+.ru-select-estado.ru-badge--resuelto {
+  background: var(--ru-green-light);
+  color: #2e7d32;
+}
+
+.ru-select-estado.ru-badge--proceso {
+  background: #e3effc;
+  color: #2b6cb0;
+}
+
+.ru-select-estado.ru-badge--pendiente {
+  background: #fcf3e3;
+  color: #b98016;
+}
+
+.ru-select-prioridad.ru-prioridad--alta {
+  color: #c0392b;
+}
+
+.ru-select-estado:disabled,
+.ru-select-prioridad:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.ru-aviso {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  background: var(--ru-green-light);
+  color: #2e7d32;
+}
+
+.ru-aviso--error {
+  background: #fdecea;
+  color: #c0392b;
+}

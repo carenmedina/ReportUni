@@ -4,7 +4,8 @@
       <h1>Reportes (gestión)</h1>
       <p>
         Todos los reportes registrados en la plataforma. Busca por código, ubicación, descripción o
-        por quien reportó, y filtra por estado, prioridad, tipo de daño o bloque.
+        por quien reportó, y filtra por estado, prioridad, tipo de daño o bloque. Cambia el estado o la
+        prioridad de un reporte directamente desde la tabla, o entra al detalle.
       </p>
     </div>
   </div>
@@ -60,6 +61,12 @@
       <span class="ru-toolbar__count">{{ reportes().length }} resultados</span>
     </div>
 
+    @if (aviso(); as mensaje) {
+      <div class="ru-aviso" [class.ru-aviso--error]="mensaje.tipo === 'error'" role="status">
+        {{ mensaje.texto }}
+      </div>
+    }
+
     @if (cargando()) {
       <p class="ru-estado">Cargando reportes...</p>
     } @else if (error()) {
@@ -75,8 +82,8 @@
           <td class="ru-th">Ubicación</td>
           <td class="ru-th">Reportado por</td>
           <td class="ru-th" style="width: 90px;">Fecha</td>
-          <td class="ru-th" style="width: 110px;">Estado</td>
-          <td class="ru-th" style="width: 80px;">Prioridad</td>
+          <td class="ru-th" style="width: 130px;">Estado</td>
+          <td class="ru-th" style="width: 100px;">Prioridad</td>
           <td class="ru-th" style="width: 90px;"></td>
         </tr>
         @for (reporte of reportes(); track reporte.id) {
@@ -90,19 +97,32 @@
             </td>
             <td class="ru-td">{{ fecha(reporte) }}</td>
             <td class="ru-td">
-              <span
-                class="ru-badge"
+              <select
+                class="ru-select-estado"
                 [class.ru-badge--resuelto]="reporte.estado === 'RESUELTO'"
                 [class.ru-badge--proceso]="reporte.estado === 'EN_PROCESO'"
                 [class.ru-badge--pendiente]="reporte.estado === 'PENDIENTE'"
+                [disabled]="guardando() === reporte.id"
+                [attr.aria-label]="'Estado del reporte ' + reporte.codigo"
+                (change)="cambiarEstado(reporte, $any($event.target))"
               >
-                ● {{ etiquetaEstado(reporte.estado) }}
-              </span>
+                @for (op of opcionesEstado; track op.valor) {
+                  <option [value]="op.valor" [selected]="op.valor === reporte.estado">{{ op.etiqueta }}</option>
+                }
+              </select>
             </td>
             <td class="ru-td">
-              <span class="ru-prioridad" [class.ru-prioridad--alta]="reporte.prioridadEstimada === 'ALTA'">
-                {{ etiquetaPrioridad(reporte.prioridadEstimada) }}
-              </span>
+              <select
+                class="ru-select-prioridad"
+                [class.ru-prioridad--alta]="reporte.prioridadEstimada === 'ALTA'"
+                [disabled]="guardando() === reporte.id"
+                [attr.aria-label]="'Prioridad del reporte ' + reporte.codigo"
+                (change)="cambiarPrioridad(reporte, $any($event.target))"
+              >
+                @for (op of opcionesPrioridad; track op.valor) {
+                  <option [value]="op.valor" [selected]="op.valor === reporte.prioridadEstimada">{{ op.etiqueta }}</option>
+                }
+              </select>
             </td>
             <td class="ru-td"><a [routerLink]="['/admin/reportes', reporte.id]">Ver detalle</a></td>
           </tr>

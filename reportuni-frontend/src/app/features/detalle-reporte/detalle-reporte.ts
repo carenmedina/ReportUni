@@ -2,6 +2,7 @@ import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Observable } from 'rxjs';
 import {
   FotoInfo,
   ReporteDetalle,
@@ -12,6 +13,9 @@ import {
   ubicacionTexto,
 } from '../../core/models/reporte-consulta.model';
 import { ReporteConsultaService } from '../../core/services/reporte-consulta.service';
+import { AdminReporteService } from '../../core/services/admin-reporte.service';
+import { AdminReporteItem, OPCIONES_ESTADO, OPCIONES_PRIORIDAD } from '../../core/models/admin-reporte.model';
+import { EstadoReporte, PrioridadReporte } from '../../core/models/reporte.model';
 
 @Component({
   selector: 'app-detalle-reporte',
@@ -22,11 +26,19 @@ import { ReporteConsultaService } from '../../core/services/reporte-consulta.ser
 })
 export class DetalleReporte implements OnDestroy {
   private readonly servicio = inject(ReporteConsultaService);
+  private readonly adminServicio = inject(AdminReporteService);
   private readonly ruta = inject(ActivatedRoute);
 
   // La misma pantalla sirve al estudiante y al administrador: la ruta indica a donde volver
   readonly volverA: string = this.ruta.snapshot.data['volverA'] ?? '/mis-reportes';
   readonly volverTexto: string = this.ruta.snapshot.data['volverTexto'] ?? 'Mis reportes';
+
+  // Semana 7: solo el administrador (ruta admin/reportes/:id) puede gestionar el reporte
+  readonly gestionar: boolean = this.ruta.snapshot.data['gestionar'] === true;
+  readonly opcionesEstado = OPCIONES_ESTADO;
+  readonly opcionesPrioridad = OPCIONES_PRIORIDAD;
+  readonly guardando = signal(false);
+  readonly aviso = signal<{ tipo: 'ok' | 'error'; texto: string } | null>(null);
 
   readonly reporte = signal<ReporteDetalle | null>(null);
   readonly cargando = signal(true);
@@ -67,6 +79,54 @@ export class DetalleReporte implements OnDestroy {
       error: (err: HttpErrorResponse) => {
         this.error.set(this.servicio.interpretarError(err));
         this.cargando.set(false);
+      },
+    });
+  }
+
+  cambiarEstado(selector: HTMLSelectElement): void {
+    const actual = this.reporte();
+    const nuevo = selector.value as EstadoReporte;
+    if (!actual || nuevo === actual.estado) {
+      return;
+    }
+    this.guardar(selector, actual.estado, this.adminServicio.cambiarEstado(actual.id, nuevo), 'Estado actualizado.');
+  }
+
+  cambiarPrioridad(selector: HTMLSelectElement): void {
+    const actual = this.reporte();
+    const nueva = selector.value as PrioridadReporte;
+    if (!actual || nueva === actual.prioridadEstimada) {
+      return;
+    }
+    this.guardar(
+      selector,
+      actual.prioridadEstimada,
+      this.adminServicio.cambiarPrioridad(actual.id, nueva),
+      'Prioridad actualizada.',
+    );
+  }
+
+  private guardar(
+    selector: HTMLSelectElement,
+    valorAnterior: string,
+    peticion: Observable<AdminReporteItem>,
+    mensajeOk: string,
+  ): void {
+    this.guardando.set(true);
+    this.aviso.set(null);
+
+    peticion.subscribe({
+      next: (actualizado) => {
+        this.reporte.update((r) =>
+          r ? { ...r, estado: actualizado.estado, prioridadEstimada: actualizado.prioridadEstimada } : r,
+        );
+        this.guardando.set(false);
+        this.aviso.set({ tipo: 'ok', texto: mensajeOk });
+      },
+      error: (err: HttpErrorResponse) => {
+        selector.value = valorAnterior;
+        this.guardando.set(false);
+        this.aviso.set({ tipo: 'error', texto: this.adminServicio.interpretarError(err) });
       },
     });
   }

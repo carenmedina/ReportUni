@@ -39,4 +39,25 @@ describe('AdminReporteService', () => {
     expect(req.request.params.has('bloque')).toBeFalse();
     req.flush([]);
   });
+
+  it('cambia el estado con PUT y devuelve el reporte actualizado', () => {
+    servicio.cambiarEstado(7, 'RESUELTO').subscribe((r) => expect(r.estado).toBe('RESUELTO'));
+    const req = http.expectOne((r) => r.url.endsWith('/admin/reportes/7/estado'));
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ estado: 'RESUELTO' });
+    req.flush({ id: 7, estado: 'RESUELTO' });
+  });
+
+  it('cambia la prioridad con PUT', () => {
+    servicio.cambiarPrioridad(7, 'ALTA').subscribe();
+    const req = http.expectOne((r) => r.url.endsWith('/admin/reportes/7/prioridad'));
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ prioridad: 'ALTA' });
+    req.flush({ id: 7, prioridadEstimada: 'ALTA' });
+  });
+
+  it('usa el mensaje del servidor cuando el cambio no es valido (400)', () => {
+    const texto = servicio.interpretarError({ status: 400, error: { mensaje: 'El reporte ya está en estado Pendiente.' } } as any);
+    expect(texto).toBe('El reporte ya está en estado Pendiente.');
+  });
 });

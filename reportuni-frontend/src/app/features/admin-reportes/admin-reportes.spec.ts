@@ -75,4 +75,54 @@ describe('AdminReportes', () => {
 
     expect(fixture.componentInstance.error()).toContain('No se pudo conectar');
   });
+
+  function selector(valor: string): HTMLSelectElement {
+    const el = document.createElement('select');
+    ['PENDIENTE', 'EN_PROCESO', 'RESUELTO', 'ALTA', 'MEDIA', 'BAJA'].forEach((v) => {
+      const op = document.createElement('option');
+      op.value = v;
+      el.appendChild(op);
+    });
+    el.value = valor;
+    return el;
+  }
+
+  it('cambia el estado de un reporte y actualiza la fila', () => {
+    const fixture = crear();
+
+    fixture.componentInstance.cambiarEstado(datos[1] as any, selector('RESUELTO'));
+    const req = http.expectOne((r) => r.url.endsWith('/admin/reportes/1/estado'));
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ estado: 'RESUELTO' });
+    req.flush({ ...datos[1], estado: 'RESUELTO' });
+
+    expect(fixture.componentInstance.reportes().find((r) => r.id === 1)?.estado).toBe('RESUELTO');
+    expect(fixture.componentInstance.aviso()?.tipo).toBe('ok');
+    expect(fixture.componentInstance.guardando()).toBeNull();
+  });
+
+  it('si el servidor rechaza el cambio, devuelve el valor anterior y avisa', () => {
+    const fixture = crear();
+    const sel = selector('EN_PROCESO');
+
+    fixture.componentInstance.cambiarEstado(datos[1] as any, sel);
+    http.expectOne((r) => r.url.endsWith('/admin/reportes/1/estado'))
+      .flush({ mensaje: 'No encontramos ese reporte.' }, { status: 404, statusText: 'Not Found' });
+
+    expect(sel.value).toBe('PENDIENTE');
+    expect(fixture.componentInstance.aviso()?.tipo).toBe('error');
+    expect(fixture.componentInstance.reportes().find((r) => r.id === 1)?.estado).toBe('PENDIENTE');
+  });
+
+  it('cambia la prioridad y no pide nada si el valor no cambio', () => {
+    const fixture = crear();
+
+    fixture.componentInstance.cambiarPrioridad(datos[1] as any, selector('ALTA')); // ya era ALTA
+    fixture.componentInstance.cambiarPrioridad(datos[1] as any, selector('BAJA'));
+    const req = http.expectOne((r) => r.url.endsWith('/admin/reportes/1/prioridad'));
+    expect(req.request.body).toEqual({ prioridad: 'BAJA' });
+    req.flush({ ...datos[1], prioridadEstimada: 'BAJA' });
+
+    expect(fixture.componentInstance.reportes().find((r) => r.id === 1)?.prioridadEstimada).toBe('BAJA');
+  });
 });
