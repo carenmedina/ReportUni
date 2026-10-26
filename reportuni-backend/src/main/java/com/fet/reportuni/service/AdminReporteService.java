@@ -25,6 +25,66 @@ public class AdminReporteService {
         this.reporteRepository = reporteRepository;
     }
 
+    public static class CambioInvalidoException extends RuntimeException {
+        public CambioInvalidoException(String mensaje) {
+            super(mensaje);
+        }
+    }
+
+    /**
+     * Semana 7: el administrador cambia el estado de un reporte. Se permite pasar a cualquier
+     * estado distinto del actual (incluido reabrir un reporte resuelto). El historial de cambios
+     * y las notificaciones al estudiante se construyen en la Semana 8.
+     */
+    @Transactional
+    public AdminReporteItem cambiarEstado(Long id, EstadoReporte nuevoEstado) {
+        Reporte reporte = buscar(id);
+
+        if (reporte.getEstado() == nuevoEstado) {
+            throw new CambioInvalidoException(
+                    "El reporte ya está en estado " + etiqueta(nuevoEstado) + ".");
+        }
+
+        reporte.setEstado(nuevoEstado);
+        reporteRepository.save(reporte);
+        return aItem(reporte);
+    }
+
+    @Transactional
+    public AdminReporteItem cambiarPrioridad(Long id, PrioridadReporte nuevaPrioridad) {
+        Reporte reporte = buscar(id);
+
+        if (reporte.getPrioridadEstimada() == nuevaPrioridad) {
+            throw new CambioInvalidoException(
+                    "El reporte ya tiene prioridad " + etiqueta(nuevaPrioridad) + ".");
+        }
+
+        reporte.setPrioridadEstimada(nuevaPrioridad);
+        reporteRepository.save(reporte);
+        return aItem(reporte);
+    }
+
+    private Reporte buscar(Long id) {
+        return reporteRepository.findById(id)
+                .orElseThrow(() -> new ReporteService.ReporteNoEncontradoException("No encontramos ese reporte."));
+    }
+
+    private String etiqueta(EstadoReporte estado) {
+        return switch (estado) {
+            case PENDIENTE -> "Pendiente";
+            case EN_PROCESO -> "En proceso";
+            case RESUELTO -> "Resuelto";
+        };
+    }
+
+    private String etiqueta(PrioridadReporte prioridad) {
+        return switch (prioridad) {
+            case ALTA -> "Alta";
+            case MEDIA -> "Media";
+            case BAJA -> "Baja";
+        };
+    }
+
     @Transactional(readOnly = true)
     public AdminResumenResponse resumen() {
         long pendientes = reporteRepository.countByEstado(EstadoReporte.PENDIENTE);
