@@ -129,6 +129,24 @@
         </section>
 
         <section class="ru-tarjeta">
+          <h2>Historial de cambios</h2>
+          @if (historialError()) {
+            <p class="ru-detalle__nota">No pudimos cargar el historial.</p>
+          } @else {
+            <ul class="ru-historial">
+              @for (h of historial(); track h.id) {
+                <li class="ru-historial__item">
+                  <strong>{{ descripcionCambio(h) }}</strong>
+                  <span>{{ h.realizadoPor }} · {{ fechaHistorial(h.fecha) }}</span>
+                </li>
+              } @empty {
+                <li class="ru-detalle__nota">Aún no hay cambios registrados.</li>
+              }
+            </ul>
+          }
+        </section>
+
+        <section class="ru-tarjeta">
           <h2>Detalles del reporte</h2>
           <dl class="ru-datos">
             <dt>Reportado por</dt>

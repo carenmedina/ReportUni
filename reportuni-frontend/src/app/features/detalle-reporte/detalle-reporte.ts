@@ -13,6 +13,8 @@ import {
   ubicacionTexto,
 } from '../../core/models/reporte-consulta.model';
 import { ReporteConsultaService } from '../../core/services/reporte-consulta.service';
+import { SeguimientoService } from '../../core/services/seguimiento.service';
+import { HistorialItem, descripcionCambio } from '../../core/models/seguimiento.model';
 import { AdminReporteService } from '../../core/services/admin-reporte.service';
 import { AdminReporteItem, OPCIONES_ESTADO, OPCIONES_PRIORIDAD } from '../../core/models/admin-reporte.model';
 import { EstadoReporte, PrioridadReporte } from '../../core/models/reporte.model';
@@ -27,6 +29,7 @@ import { EstadoReporte, PrioridadReporte } from '../../core/models/reporte.model
 export class DetalleReporte implements OnDestroy {
   private readonly servicio = inject(ReporteConsultaService);
   private readonly adminServicio = inject(AdminReporteService);
+  private readonly seguimiento = inject(SeguimientoService);
   private readonly ruta = inject(ActivatedRoute);
 
   // La misma pantalla sirve al estudiante y al administrador: la ruta indica a donde volver
@@ -39,6 +42,11 @@ export class DetalleReporte implements OnDestroy {
   readonly opcionesPrioridad = OPCIONES_PRIORIDAD;
   readonly guardando = signal(false);
   readonly aviso = signal<{ tipo: 'ok' | 'error'; texto: string } | null>(null);
+
+  // Semana 8: historial de cambios de estado y prioridad
+  readonly historial = signal<HistorialItem[]>([]);
+  readonly historialError = signal(false);
+  readonly descripcionCambio = descripcionCambio;
 
   readonly reporte = signal<ReporteDetalle | null>(null);
   readonly cargando = signal(true);
@@ -75,6 +83,7 @@ export class DetalleReporte implements OnDestroy {
         this.reporte.set(reporte);
         this.cargando.set(false);
         reporte.fotos.forEach((foto) => this.cargarFoto(reporte.id, foto));
+        this.cargarHistorial(reporte.id);
       },
       error: (err: HttpErrorResponse) => {
         this.error.set(this.servicio.interpretarError(err));
@@ -122,6 +131,7 @@ export class DetalleReporte implements OnDestroy {
         );
         this.guardando.set(false);
         this.aviso.set({ tipo: 'ok', texto: mensajeOk });
+        this.cargarHistorial(actualizado.id);
       },
       error: (err: HttpErrorResponse) => {
         selector.value = valorAnterior;
@@ -129,6 +139,18 @@ export class DetalleReporte implements OnDestroy {
         this.aviso.set({ tipo: 'error', texto: this.adminServicio.interpretarError(err) });
       },
     });
+  }
+
+  private cargarHistorial(id: number): void {
+    this.historialError.set(false);
+    this.seguimiento.historial(id).subscribe({
+      next: (lista) => this.historial.set(lista),
+      error: () => this.historialError.set(true),
+    });
+  }
+
+  fechaHistorial(iso: string): string {
+    return formatearFecha(iso, true);
   }
 
   private cargarFoto(reporteId: number, foto: FotoInfo): void {

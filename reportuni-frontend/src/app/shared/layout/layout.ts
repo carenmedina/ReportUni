@@ -4,11 +4,12 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { NavegacionService } from '../../core/services/navegacion.service';
 import { MenuItem } from '../../core/models/navegacion.model';
+import { NotificacionesCampana } from '../notificaciones-campana/notificaciones-campana';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, NotificacionesCampana],
   templateUrl: './layout.html',
   styleUrl: './layout.scss',
 })
