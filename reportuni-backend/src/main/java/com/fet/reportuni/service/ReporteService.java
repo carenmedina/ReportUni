@@ -67,7 +67,7 @@ public class ReporteService {
                 .descripcion(request.descripcion().trim())
                 .latitud(request.latitud())
                 .longitud(request.longitud())
-                .notificarPorCorreo(request.notificarPorCorreo() == null || request.notificarPorCorreo())
+                .notificarPorCorreo(false) // las notificaciones por correo aun no estan implementadas
                 .build();
 
         reporteRepository.save(reporte);
