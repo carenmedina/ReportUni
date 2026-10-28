@@ -168,6 +168,8 @@ public class ReporteService {
                 r.isNotificarPorCorreo(),
                 r.getUsuario().getNombreCompleto(),
                 r.getFechaCreacion(),
+                r.getAsignadoA(),
+                r.getFechaActualizacion() != null ? r.getFechaActualizacion() : r.getFechaCreacion(),
                 fotos
         );
     }

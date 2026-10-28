@@ -2,7 +2,9 @@ package com.fet.reportuni.controller;
 
 import com.fet.reportuni.dto.ErrorResponse;
 import com.fet.reportuni.service.AdminReporteService;
+import com.fet.reportuni.service.AlmacenamientoFotosService;
 import com.fet.reportuni.service.ReporteService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+@Slf4j
 @RestControllerAdvice(assignableTypes = AdminReporteController.class)
 public class AdminReporteExceptionHandler {
 
@@ -22,6 +25,17 @@ public class AdminReporteExceptionHandler {
     @ExceptionHandler(AdminReporteService.CambioInvalidoException.class)
     public ResponseEntity<ErrorResponse> cambioInvalido(AdminReporteService.CambioInvalidoException ex) {
         return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(AlmacenamientoFotosService.FotoInvalidaException.class)
+    public ResponseEntity<ErrorResponse> fotoInvalida(AlmacenamientoFotosService.FotoInvalidaException ex) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(AlmacenamientoFotosService.AlmacenamientoException.class)
+    public ResponseEntity<ErrorResponse> errorDeAlmacenamiento(AlmacenamientoFotosService.AlmacenamientoException ex) {
+        log.error("Error almacenando fotografias de gestion", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

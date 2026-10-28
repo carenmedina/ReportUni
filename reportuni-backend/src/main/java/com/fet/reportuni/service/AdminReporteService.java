@@ -2,6 +2,7 @@ package com.fet.reportuni.service;
 
 import com.fet.reportuni.dto.AdminReporteItem;
 import com.fet.reportuni.dto.AdminResumenResponse;
+import com.fet.reportuni.model.AreaAsignada;
 import com.fet.reportuni.model.Bloque;
 import com.fet.reportuni.model.EstadoReporte;
 import com.fet.reportuni.model.PrioridadReporte;
@@ -11,7 +12,9 @@ import com.fet.reportuni.model.Usuario;
 import com.fet.reportuni.repository.ReporteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,12 +23,19 @@ public class AdminReporteService {
 
     private static final int CANTIDAD_RECIENTES = 5;
 
+    private static final int NOTA_MINIMA = 10;
+    private static final int NOTA_MAXIMA = 1000;
+
     private final ReporteRepository reporteRepository;
     private final SeguimientoService seguimiento;
+    private final AlmacenamientoFotosService almacenamientoFotos;
 
-    public AdminReporteService(ReporteRepository reporteRepository, SeguimientoService seguimiento) {
+    public AdminReporteService(ReporteRepository reporteRepository,
+                               SeguimientoService seguimiento,
+                               AlmacenamientoFotosService almacenamientoFotos) {
         this.reporteRepository = reporteRepository;
         this.seguimiento = seguimiento;
+        this.almacenamientoFotos = almacenamientoFotos;
     }
 
     public static class CambioInvalidoException extends RuntimeException {
@@ -34,13 +44,13 @@ public class AdminReporteService {
         }
     }
 
-    /**
-     * Semana 7: el administrador cambia el estado de un reporte. Se permite pasar a cualquier
-     * estado distinto del actual (incluido reabrir un reporte resuelto). Semana 8: cada cambio
-     * queda en el historial y se notifica al estudiante dueno del reporte.
-     */
     @Transactional
-    public AdminReporteItem cambiarEstado(Usuario actor, Long id, EstadoReporte nuevoEstado) {
+    public AdminReporteItem cambiarEstado(Usuario actor, Long id, EstadoReporte nuevoEstado,
+                                          String nota, List<MultipartFile> archivos) {
+        if (nuevoEstado == null) {
+            throw new CambioInvalidoException("Debes indicar el nuevo estado.");
+        }
+
         Reporte reporte = buscar(id);
 
         if (reporte.getEstado() == nuevoEstado) {
@@ -48,11 +58,75 @@ public class AdminReporteService {
                     "El reporte ya está en estado " + etiqueta(nuevoEstado) + ".");
         }
 
+        String explicacion = validarNota(nota, mensajeNotaEstado(nuevoEstado));
+        List<AlmacenamientoFotosService.FotoValidada> fotos =
+                almacenamientoFotos.validarEvidencia(archivos, nuevoEstado == EstadoReporte.RESUELTO);
+
         EstadoReporte anterior = reporte.getEstado();
         reporte.setEstado(nuevoEstado);
+        reporte.setFechaActualizacion(LocalDateTime.now());
         reporteRepository.save(reporte);
-        seguimiento.registrarCambioEstado(reporte, actor, anterior, nuevoEstado);
+        seguimiento.registrarCambioEstado(reporte, actor, anterior, nuevoEstado, explicacion, fotos);
         return aItem(reporte);
+    }
+
+    @Transactional
+    public AdminReporteItem asignar(Usuario actor, Long id, AreaAsignada area, String nota) {
+        if (area == null) {
+            throw new CambioInvalidoException("Selecciona a quién se asigna el reporte.");
+        }
+
+        Reporte reporte = buscar(id);
+
+        if (reporte.getAsignadoA() == area) {
+            throw new CambioInvalidoException("El reporte ya está asignado a " + area.getEtiqueta() + ".");
+        }
+
+        String explicacion = null;
+        if (nota != null && !nota.isBlank()) {
+            explicacion = validarNota(nota, "La nota debe tener entre " + NOTA_MINIMA + " y "
+                    + NOTA_MAXIMA + " caracteres.");
+        }
+
+        AreaAsignada anterior = reporte.getAsignadoA();
+        reporte.setAsignadoA(area);
+        reporte.setFechaActualizacion(LocalDateTime.now());
+        reporteRepository.save(reporte);
+        seguimiento.registrarAsignacion(reporte, actor, anterior, area, explicacion);
+        return aItem(reporte);
+    }
+
+    @Transactional
+    public AdminReporteItem agregarActualizacion(Usuario actor, Long id, String nota,
+                                                 List<MultipartFile> archivos) {
+        Reporte reporte = buscar(id);
+
+        String explicacion = validarNota(nota, "Describe la novedad del proceso (entre "
+                + NOTA_MINIMA + " y " + NOTA_MAXIMA + " caracteres).");
+        List<AlmacenamientoFotosService.FotoValidada> fotos =
+                almacenamientoFotos.validarEvidencia(archivos, false);
+
+        reporte.setFechaActualizacion(LocalDateTime.now());
+        reporteRepository.save(reporte);
+        seguimiento.registrarActualizacion(reporte, actor, explicacion, fotos);
+        return aItem(reporte);
+    }
+
+    private String validarNota(String nota, String mensaje) {
+        String limpia = nota == null ? "" : nota.trim();
+        if (limpia.length() < NOTA_MINIMA || limpia.length() > NOTA_MAXIMA) {
+            throw new CambioInvalidoException(mensaje);
+        }
+        return limpia;
+    }
+
+    private String mensajeNotaEstado(EstadoReporte estado) {
+        String rango = " (entre " + NOTA_MINIMA + " y " + NOTA_MAXIMA + " caracteres).";
+        return switch (estado) {
+            case EN_PROCESO -> "Describe qué se está haciendo para atender el reporte" + rango;
+            case RESUELTO -> "Describe qué se hizo para resolver el reporte" + rango;
+            case PENDIENTE -> "Indica el motivo para devolver el reporte a Pendiente" + rango;
+        };
     }
 
     @Transactional
@@ -66,6 +140,7 @@ public class AdminReporteService {
 
         PrioridadReporte anterior = reporte.getPrioridadEstimada();
         reporte.setPrioridadEstimada(nuevaPrioridad);
+        reporte.setFechaActualizacion(LocalDateTime.now());
         reporteRepository.save(reporte);
         seguimiento.registrarCambioPrioridad(reporte, actor, anterior, nuevaPrioridad);
         return aItem(reporte);
@@ -116,11 +191,6 @@ public class AdminReporteService {
         );
     }
 
-    /**
-     * Lista todos los reportes (mas recientes primero). Cada filtro es opcional: si llega null o
-     * vacio no se aplica. La busqueda de texto compara contra codigo, tipo, espacio, descripcion y
-     * nombre o correo de quien reporto.
-     */
     @Transactional(readOnly = true)
     public List<AdminReporteItem> listar(EstadoReporte estado, TipoDano tipoDano,
                                          PrioridadReporte prioridad, Bloque bloque, String texto) {

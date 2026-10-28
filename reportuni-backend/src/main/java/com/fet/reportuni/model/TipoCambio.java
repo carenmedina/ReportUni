@@ -2,5 +2,7 @@ package com.fet.reportuni.model;
 
 public enum TipoCambio {
     ESTADO,
-    PRIORIDAD
+    PRIORIDAD,
+    ASIGNACION,
+    ACTUALIZACION
 }

@@ -28,14 +28,14 @@ class AdminReporteServiceTest {
 
     @BeforeEach
     void preparar() {
-        servicio = new AdminReporteService(reporteRepository, org.mockito.Mockito.mock(SeguimientoService.class));
+        servicio = new AdminReporteService(reporteRepository, org.mockito.Mockito.mock(SeguimientoService.class),
+                org.mockito.Mockito.mock(AlmacenamientoFotosService.class));
 
         Usuario uno = Usuario.builder().id(1L).nombreCompleto("Estudiante Uno")
                 .correoInstitucional("estudiante1@fet.edu.co").passwordHash("x").rol(Rol.ESTUDIANTE).build();
         Usuario dos = Usuario.builder().id(2L).nombreCompleto("Estudiante Dos")
                 .correoInstitucional("estudiante2@fet.edu.co").passwordHash("x").rol(Rol.ESTUDIANTE).build();
 
-        // ya vienen ordenados del mas reciente al mas antiguo, como los devuelve el repositorio
         todos = List.of(
                 reporte(3L, dos, TipoDano.AUDIOVISUAL, Bloque.BLOQUE_C, "Auditorio",
                         PrioridadReporte.MEDIA, EstadoReporte.EN_PROCESO, "Proyector sin imagen", 3),

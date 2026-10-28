@@ -63,6 +63,13 @@ public class Reporte {
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "asignado_a", length = 25)
+    private AreaAsignada asignadoA;
+
+    @Column(name = "fecha_actualizacion")
+    private LocalDateTime fechaActualizacion;
+
     @OneToMany(mappedBy = "reporte", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("orden ASC")
     @Builder.Default

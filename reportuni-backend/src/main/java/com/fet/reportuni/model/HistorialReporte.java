@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-/** Semana 8: registro de cada cambio de estado o prioridad que hace el administrador. */
 @Entity
 @Table(name = "reporte_historial")
 @Getter
@@ -28,7 +29,7 @@ public class HistorialReporte {
     private Reporte reporte;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo", nullable = false, length = 15)
+    @Column(name = "tipo", nullable = false, length = 20)
     private TipoCambio tipo;
 
     @Column(name = "valor_anterior", nullable = false, length = 20)
@@ -41,8 +42,21 @@ public class HistorialReporte {
     @JoinColumn(name = "realizado_por_id", nullable = false)
     private Usuario realizadoPor;
 
+    @Column(name = "nota", length = 1000)
+    private String nota;
+
     @Column(name = "fecha", nullable = false, updatable = false)
     private LocalDateTime fecha;
+
+    @OneToMany(mappedBy = "historial", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orden ASC")
+    @Builder.Default
+    private List<HistorialFoto> fotos = new ArrayList<>();
+
+    public void agregarFoto(HistorialFoto foto) {
+        foto.setHistorial(this);
+        fotos.add(foto);
+    }
 
     @PrePersist
     void alCrear() {

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,13 +63,36 @@ class SeguimientoControllerTest {
     @Test
     void devuelveElHistorial() throws Exception {
         when(servicio.historial(estudiante, 7L)).thenReturn(List.of(new HistorialItemResponse(
-                1L, TipoCambio.ESTADO, "PENDIENTE", "EN_PROCESO", "Admin", LocalDateTime.of(2026, 10, 21, 10, 0))));
+                1L, TipoCambio.ESTADO, "PENDIENTE", "EN_PROCESO", "Se contactó al técnico", "Admin",
+                LocalDateTime.of(2026, 10, 21, 10, 0),
+                List.of(new HistorialItemResponse.FotoHistorialInfo(5L, "arreglo.jpg", "image/jpeg", 10)))));
 
         mockMvc.perform(get("/api/reportes/7/historial"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].tipo").value("ESTADO"))
                 .andExpect(jsonPath("$[0].valorNuevo").value("EN_PROCESO"))
-                .andExpect(jsonPath("$[0].realizadoPor").value("Admin"));
+                .andExpect(jsonPath("$[0].realizadoPor").value("Admin"))
+                .andExpect(jsonPath("$[0].nota").value("Se contactó al técnico"))
+                .andExpect(jsonPath("$[0].fotos[0].id").value(5));
+    }
+
+    @Test
+    void entregaLaFotoDeUnaEntradaDelHistorial() throws Exception {
+        when(servicio.fotoHistorial(estudiante, 7L, 1L, 5L)).thenReturn(
+                new ReporteService.FotoDescargable(new ByteArrayResource(new byte[]{1, 2, 3}), "image/jpeg"));
+
+        mockMvc.perform(get("/api/reportes/7/historial/1/fotos/5"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", "image/jpeg"));
+    }
+
+    @Test
+    void fotoDeHistorialAjenoDevuelve404() throws Exception {
+        when(servicio.fotoHistorial(estudiante, 8L, 1L, 5L))
+                .thenThrow(new ReporteService.ReporteNoEncontradoException("No encontramos ese reporte."));
+
+        mockMvc.perform(get("/api/reportes/8/historial/1/fotos/5"))
+                .andExpect(status().isNotFound());
     }
 
     @Test

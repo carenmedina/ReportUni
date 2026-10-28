@@ -103,4 +103,47 @@ class AlmacenamientoFotosServiceTest {
         assertThat(carpetaTemporal.resolve("9")).doesNotExist();
         assertThatCode(() -> servicio.eliminarCarpeta(9L)).doesNotThrowAnyException();
     }
+
+    @Test
+    void evidenciaOpcionalAceptaListaVaciaOCero() {
+        assertThat(servicio.validarEvidencia(null, false)).isEmpty();
+        assertThat(servicio.validarEvidencia(List.of(), false)).isEmpty();
+    }
+
+    @Test
+    void evidenciaObligatoriaExigeAlMenosUnaFoto() {
+        assertThatThrownBy(() -> servicio.validarEvidencia(List.of(), true))
+                .isInstanceOf(FotoInvalidaException.class)
+                .hasMessageContaining("fotografía del arreglo");
+        assertThatThrownBy(() -> servicio.validarEvidencia(null, true))
+                .isInstanceOf(FotoInvalidaException.class);
+    }
+
+    @Test
+    void evidenciaAplicaLasMismasReglasQueLasFotosDelReporte() {
+        assertThat(servicio.validarEvidencia(List.of(foto("arreglo.jpg", JPG)), true)).hasSize(1);
+
+        assertThatThrownBy(() -> servicio.validarEvidencia(List.of(foto("virus.jpg", "hola".getBytes())), false))
+                .isInstanceOf(FotoInvalidaException.class)
+                .hasMessageContaining("no es una imagen JPG o PNG");
+
+        List<MockMultipartFile> seis = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            seis.add(foto("f" + i + ".jpg", JPG));
+        }
+        assertThatThrownBy(() -> servicio.validarEvidencia(new ArrayList<>(seis), false))
+                .isInstanceOf(FotoInvalidaException.class)
+                .hasMessageContaining("máximo 5");
+    }
+
+    @Test
+    void eliminaUnArchivoGuardado() throws IOException {
+        FotoValidada validada = servicio.validarEvidencia(List.of(foto("a.jpg", JPG)), true).get(0);
+        String nombre = servicio.guardar(7L, validada);
+        assertThat(Files.exists(carpetaTemporal.resolve("7").resolve(nombre))).isTrue();
+
+        servicio.eliminarArchivo(7L, nombre);
+
+        assertThat(Files.exists(carpetaTemporal.resolve("7").resolve(nombre))).isFalse();
+    }
 }

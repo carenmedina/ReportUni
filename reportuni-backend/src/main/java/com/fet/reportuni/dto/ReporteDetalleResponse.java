@@ -1,5 +1,6 @@
 package com.fet.reportuni.dto;
 
+import com.fet.reportuni.model.AreaAsignada;
 import com.fet.reportuni.model.Bloque;
 import com.fet.reportuni.model.EstadoReporte;
 import com.fet.reportuni.model.PrioridadReporte;
@@ -22,6 +23,8 @@ public record ReporteDetalleResponse(
         boolean notificarPorCorreo,
         String reportadoPor,
         LocalDateTime fechaCreacion,
+        AreaAsignada asignadoA,
+        LocalDateTime ultimaActualizacion,
         List<FotoInfo> fotos
 ) {
 

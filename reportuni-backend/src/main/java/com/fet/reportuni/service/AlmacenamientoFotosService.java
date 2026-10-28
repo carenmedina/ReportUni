@@ -72,6 +72,34 @@ public class AlmacenamientoFotosService {
         return new FotoValidada(archivo, tipo, "image/png".equals(tipo) ? "png" : "jpg");
     }
 
+
+    public List<FotoValidada> validarEvidencia(List<MultipartFile> archivos, boolean obligatoria) {
+        List<MultipartFile> recibidos = archivos == null
+                ? List.of()
+                : archivos.stream().filter(a -> a != null && !a.isEmpty()).toList();
+
+        if (recibidos.isEmpty()) {
+            if (obligatoria) {
+                throw new FotoInvalidaException(
+                        "Para marcar el reporte como resuelto adjunta al menos una fotografía del arreglo.");
+            }
+            return List.of();
+        }
+        if (recibidos.size() > MAX_FOTOS) {
+            throw new FotoInvalidaException("Puedes adjuntar máximo " + MAX_FOTOS + " fotografías.");
+        }
+
+        return recibidos.stream().map(this::validarUna).toList();
+    }
+
+    public void eliminarArchivo(Long reporteId, String nombreArchivo) {
+        try {
+            Files.deleteIfExists(directorioBase.resolve(String.valueOf(reporteId)).resolve(nombreArchivo));
+        } catch (IOException ex) {
+            log.warn("No se pudo borrar la foto {} del reporte {}", nombreArchivo, reporteId, ex);
+        }
+    }
+
     public String guardar(Long reporteId, FotoValidada foto) {
         Path carpeta = directorioBase.resolve(String.valueOf(reporteId));
         String nombreArchivo = UUID.randomUUID() + "." + foto.extension();
@@ -96,8 +124,6 @@ public class AlmacenamientoFotosService {
         }
     }
 
-    // El tipo se determina por los primeros bytes del archivo (firma), no por el
-    // Content-Type ni la extension que declara el cliente, que se pueden falsear.
     private String detectarTipo(MultipartFile archivo) {
         try (InputStream entrada = archivo.getInputStream()) {
             byte[] c = entrada.readNBytes(8);
