@@ -20,7 +20,6 @@ export class ReporteService {
     formData.append('bloque', datos.bloque);
     formData.append('espacioEspecifico', datos.espacioEspecifico);
     formData.append('descripcion', datos.descripcion);
-    formData.append('notificarPorCorreo', String(datos.notificarPorCorreo));
 
     if (datos.latitud !== null && datos.longitud !== null) {
       formData.append('latitud', String(datos.latitud));

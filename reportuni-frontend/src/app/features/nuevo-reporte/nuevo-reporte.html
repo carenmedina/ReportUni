@@ -116,24 +116,44 @@
 
         <div class="nr__field">
           <span>Fotografías del daño *</span>
-          <label
-            class="nr__drop"
-            [class.nr__drop--active]="arrastrando()"
-            (dragover)="alArrastrarSobre($event)"
-            (dragleave)="alSalirArrastre($event)"
-            (drop)="alSoltar($event)"
-          >
-            <input
-              type="file"
-              accept="image/jpeg,image/png"
-              multiple
-              [disabled]="!puedeAgregarFotos()"
-              (change)="alSeleccionarArchivos($event)"
-              hidden
-            />
-            <strong>Arrastra tus fotos aquí o selecciona un archivo</strong>
-            <small>JPG o PNG · máx. 10 MB por foto · hasta {{ limiteFotos }} fotos</small>
-          </label>
+          @if (esMovil) {
+            <!-- Celular o tableta: galeria, archivos y camara -->
+            <div class="nr__opciones">
+              <button type="button" class="ru-btn-secondary" [disabled]="!puedeAgregarFotos()" (click)="galeria.click()">
+                Seleccionar de la galería
+              </button>
+              <button type="button" class="ru-btn-secondary" [disabled]="!puedeAgregarFotos()" (click)="archivos.click()">
+                Seleccionar de archivos
+              </button>
+              <button type="button" class="ru-btn-secondary" [disabled]="!puedeAgregarFotos()" (click)="camara.click()">
+                Tomar foto
+              </button>
+            </div>
+            <input #galeria type="file" accept="image/jpeg,image/png" multiple hidden (change)="alSeleccionarArchivos($event)" />
+            <input #archivos type="file" accept=".jpg,.jpeg,.png" multiple hidden (change)="alSeleccionarArchivos($event)" />
+            <input #camara type="file" accept="image/*" capture="environment" hidden (change)="alSeleccionarArchivos($event)" />
+            <small class="nr__hint">JPG o PNG · máx. 10 MB por foto · hasta {{ limiteFotos }} fotos</small>
+          } @else {
+            <!-- Escritorio: seleccionar archivos o arrastrarlos -->
+            <label
+              class="nr__drop"
+              [class.nr__drop--active]="arrastrando()"
+              (dragover)="alArrastrarSobre($event)"
+              (dragleave)="alSalirArrastre($event)"
+              (drop)="alSoltar($event)"
+            >
+              <input
+                type="file"
+                accept="image/jpeg,image/png"
+                multiple
+                [disabled]="!puedeAgregarFotos()"
+                (change)="alSeleccionarArchivos($event)"
+                hidden
+              />
+              <strong>Seleccionar archivos</strong>
+              <small>o arrástralos aquí · JPG o PNG · máx. 10 MB por foto · hasta {{ limiteFotos }} fotos</small>
+            </label>
+          }
           @if (errorFotos()) {
             <small class="nr__err">{{ errorFotos() }}</small>
           }
@@ -148,11 +168,6 @@
             </ul>
           }
         </div>
-
-        <label class="nr__check">
-          <input type="checkbox" formControlName="notificarPorCorreo" />
-          Notificarme por correo institucional sobre el avance de este reporte
-        </label>
 
         <div class="nr__actions">
           <button type="button" class="ru-btn-secondary" (click)="cancelar()" [disabled]="enviando()">Cancelar</button>

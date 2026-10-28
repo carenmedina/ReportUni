@@ -52,7 +52,6 @@ export interface NuevoReporteDatos {
   descripcion: string;
   latitud: number | null;
   longitud: number | null;
-  notificarPorCorreo: boolean;
 }
 
 export interface ReporteCreado {

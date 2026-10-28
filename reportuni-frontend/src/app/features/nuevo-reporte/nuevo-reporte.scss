@@ -30,7 +30,7 @@
   button { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; border-radius: 50%;
     border: 0; background: var(--ru-toggle-dark); color: #fff; cursor: pointer; line-height: 1; }
 }
-.nr__check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.nr__opciones { display: flex; flex-direction: column; gap: 8px; }
 .nr__actions { display: flex; justify-content: flex-end; gap: 10px; }
 .nr__side { display: flex; flex-direction: column; gap: 16px; }
 .nr__card h3 { margin: 0 0 8px; font-size: 14px; color: var(--ru-green-dark); }

@@ -16,7 +16,6 @@ describe('ReporteService', () => {
     descripcion: 'Fuga de agua en el techo del salón',
     latitud: 10.5,
     longitud: -73.2,
-    notificarPorCorreo: true,
   };
 
   beforeEach(() => {

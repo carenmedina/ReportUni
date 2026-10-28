@@ -37,13 +37,16 @@ export class NuevoReporte implements OnDestroy {
   readonly bloques = BLOQUES;
   readonly limiteFotos = LIMITE_FOTOS;
 
+  // En pantallas tactiles (celular o tableta) se ofrecen galeria, archivos y camara
+  readonly esMovil: boolean =
+    typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
   readonly formulario = this.fb.nonNullable.group({
     tipoDano: ['', Validators.required],
     prioridadEstimada: ['MEDIA', Validators.required],
     bloque: ['', Validators.required],
     espacioEspecifico: ['', [Validators.required, Validators.maxLength(120)]],
     descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
-    notificarPorCorreo: [true],
   });
 
   readonly fotos = signal<FotoSeleccionada[]>([]);
@@ -187,7 +190,6 @@ export class NuevoReporte implements OnDestroy {
           descripcion: valores.descripcion.trim(),
           latitud: ubic?.latitud ?? null,
           longitud: ubic?.longitud ?? null,
-          notificarPorCorreo: valores.notificarPorCorreo,
         },
         this.fotos().map((f) => f.archivo),
       )

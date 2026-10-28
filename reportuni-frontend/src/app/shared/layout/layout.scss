@@ -15,7 +15,7 @@
 }
 
 .ru-header__logo {
-  width: 150px;
+  width: 180px;
   height: 64px;
   background: #ffffff;
   display: flex;
@@ -24,11 +24,10 @@
   flex-shrink: 0;
 }
 
-.ru-header__logo-text {
-  font-weight: 800;
-  font-size: 20px;
-  color: var(--ru-green);
-  letter-spacing: 0.5px;
+.ru-header__logo-img {
+  max-width: 100%;
+  max-height: 54px;
+  object-fit: contain;
 }
 
 .ru-header__nav {
@@ -65,20 +64,8 @@
   flex-shrink: 0;
 }
 
-.ru-header__bell {
-  position: relative;
+.ru-header__icon {
   display: flex;
-}
-
-.ru-header__bell-dot {
-  position: absolute;
-  top: -3px;
-  right: -4px;
-  width: 8px;
-  height: 8px;
-  background: var(--ru-danger);
-  border-radius: 50%;
-  border: 1.5px solid var(--ru-green);
 }
 
 .ru-header__user {
@@ -93,20 +80,6 @@
   cursor: pointer;
   padding: 0;
   font-family: inherit;
-}
-
-.ru-header__toggle {
-  display: none;
-  width: 44px;
-  height: 44px;
-  background: var(--ru-toggle-dark);
-  border: none;
-  border-radius: 6px;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-right: 14px;
-  cursor: pointer;
 }
 
 .ru-subnav {
@@ -154,58 +127,6 @@
   white-space: nowrap;
 }
 
-.ru-mobile-menu {
-  display: none;
-  flex-direction: column;
-  background: var(--ru-green);
-  padding: 10px 0 20px 0;
-}
-
-.ru-mobile-menu__item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 400;
-  padding: 15px 20px;
-  opacity: 0.92;
-}
-
-.ru-mobile-menu__item--current {
-  font-weight: 700;
-  opacity: 1;
-}
-
-.ru-mobile-menu__badge {
-  margin-left: 8px;
-  background: var(--ru-green-dark);
-  color: #ffffff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 9px;
-  letter-spacing: 0.3px;
-}
-
-.ru-mobile-menu__grow {
-  min-height: 24px;
-}
-
-.ru-mobile-menu__user {
-  align-self: flex-start;
-  margin: 6px 20px 0 20px;
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 6px;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 14px;
-  cursor: pointer;
-  font-family: inherit;
-}
-
 .ru-content {
   flex-grow: 1;
 }
@@ -232,33 +153,84 @@
 @media (max-width: 760px) {
   .ru-header {
     height: auto;
-    padding: 12px 14px;
+    padding: 10px 14px;
     border-bottom: 2px solid var(--ru-green-dark);
     box-sizing: border-box;
+    justify-content: space-between;
   }
 
   .ru-header__logo {
-    width: 82px;
+    width: 96px;
     height: 50px;
   }
 
-  .ru-header__nav,
-  .ru-header__actions {
+  .ru-header__nav {
     display: none;
   }
 
-  .ru-header__toggle {
-    display: flex;
-    margin-right: 0;
-    margin-left: auto;
+  .ru-header__actions {
+    gap: 16px;
+    padding-right: 0;
+  }
+
+  .ru-header__user-nombre {
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .ru-subnav {
     padding: 0 16px;
     gap: 22px;
   }
+}
 
-  .ru-mobile-menu {
-    display: flex;
-  }
+.ru-usermenu {
+  position: relative;
+}
+
+.ru-usermenu__panel {
+  position: absolute;
+  top: 34px;
+  right: 0;
+  min-width: 200px;
+  background: #ffffff;
+  color: #333333;
+  border: 1px solid var(--ru-border);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  z-index: 60;
+  overflow: hidden;
+}
+
+.ru-usermenu__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ru-border);
+  font-size: 12.5px;
+}
+
+.ru-usermenu__info span {
+  color: #888888;
+  font-size: 11.5px;
+}
+
+.ru-usermenu__item {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ru-danger);
+  cursor: pointer;
+}
+
+.ru-usermenu__item:hover {
+  background: #fdecea;
 }

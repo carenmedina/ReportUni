@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -17,7 +17,7 @@ export class Layout implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly navegacionService = inject(NavegacionService);
 
-  readonly menuMovilAbierto = signal(false);
+  readonly menuUsuarioAbierto = signal(false);
   readonly itemsMenu = signal<MenuItem[]>([]);
 
   readonly usuario = this.authService.usuarioActual;
@@ -29,28 +29,30 @@ export class Layout implements OnInit {
     });
   }
 
-  alternarMenuMovil(): void {
-    this.menuMovilAbierto.update((valor) => !valor);
+  alternarMenuUsuario(): void {
+    this.menuUsuarioAbierto.update((valor) => !valor);
   }
 
-  cerrarMenuMovil(): void {
-    this.menuMovilAbierto.set(false);
+  // El menu del usuario se cierra al hacer clic fuera de el o al pulsar Escape
+  @HostListener('document:click', ['$event'])
+  cerrarSiClicFuera(evento: Event): void {
+    const destino = evento.target as HTMLElement | null;
+    if (this.menuUsuarioAbierto() && !destino?.closest('.ru-usermenu')) {
+      this.menuUsuarioAbierto.set(false);
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  cerrarConEscape(): void {
+    this.menuUsuarioAbierto.set(false);
+  }
+
+  etiquetaRol(): string {
+    return this.usuario()?.rol === 'ADMINISTRADOR' ? 'Administrador' : 'Estudiante';
   }
 
   cerrarSesion(): void {
-    this.cerrarMenuMovil();
+    this.menuUsuarioAbierto.set(false);
     this.authService.logout();
-  }
-
-  iniciales(nombre: string | undefined): string {
-    if (!nombre) {
-      return '';
-    }
-    return nombre
-      .split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((parte) => parte[0]?.toUpperCase())
-      .join('');
   }
 }
