@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/** Semana 8: aviso dentro de la aplicacion para el estudiante dueno de un reporte. */
 @Entity
 @Table(name = "notificaciones")
 @Getter
