@@ -1,0 +1,119 @@
+.ru-tarjeta {
+  background: #ffffff;
+  border: 1px solid var(--ru-border);
+  border-radius: 6px;
+  padding: 20px 22px;
+
+  h2 {
+    font-size: 14px;
+    margin: 0 0 14px 0;
+    color: var(--ru-green-dark);
+  }
+}
+
+.ar__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ar__item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.ar__avatar {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--ru-green);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ar__burbuja {
+  flex: 1;
+  min-width: 0;
+  background: #f4f5f6;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.ar__cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+}
+
+.ar__cabecera span {
+  color: var(--ru-text-faint);
+  font-size: 11.5px;
+}
+
+.ar__cambio {
+  margin: 4px 0 0 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ru-green-dark);
+}
+
+.ar__nota {
+  margin: 6px 0 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.ar__fotos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ar__foto {
+  width: 92px;
+  height: 72px;
+  padding: 0;
+  border: 1px solid var(--ru-border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #ffffff;
+  cursor: zoom-in;
+}
+
+.ar__foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ar__foto--vacia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--ru-text-faint);
+  cursor: default;
+  border-style: dashed;
+}
+
+.ar__vacio {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--ru-text-faint);
+  list-style: none;
+}
