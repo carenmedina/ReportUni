@@ -1,0 +1,77 @@
+.sf {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sf__opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sf__zona {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  border: 2px dashed var(--ru-border-input);
+  border-radius: var(--ru-radius-lg);
+  padding: 16px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.sf__zona--activa {
+  border-color: var(--ru-green);
+  background: var(--ru-green-light);
+}
+
+.sf__zona small,
+.sf__ayuda {
+  color: var(--ru-text-soft);
+  font-size: 11.5px;
+}
+
+.sf__error {
+  color: var(--ru-danger);
+  font-size: 12px;
+}
+
+.sf__miniaturas {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+}
+
+.sf__miniaturas li {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+
+.sf__miniaturas img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--ru-radius);
+  border: 1px solid var(--ru-border);
+}
+
+.sf__miniaturas button {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--ru-toggle-dark);
+  color: #ffffff;
+  cursor: pointer;
+  line-height: 1;
+}

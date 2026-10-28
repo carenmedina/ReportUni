@@ -40,12 +40,34 @@ describe('AdminReporteService', () => {
     req.flush([]);
   });
 
-  it('cambia el estado con PUT y devuelve el reporte actualizado', () => {
-    servicio.cambiarEstado(7, 'RESUELTO').subscribe((r) => expect(r.estado).toBe('RESUELTO'));
+  it('cambia el estado con POST multipart: estado, nota y fotos', () => {
+    const foto = new File(['x'], 'arreglo.jpg', { type: 'image/jpeg' });
+    servicio.cambiarEstado(7, 'RESUELTO', 'Se cambió la tubería dañada', [foto]).subscribe((r) => expect(r.estado).toBe('RESUELTO'));
     const req = http.expectOne((r) => r.url.endsWith('/admin/reportes/7/estado'));
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual({ estado: 'RESUELTO' });
+    expect(req.request.method).toBe('POST');
+    const cuerpo = req.request.body as FormData;
+    expect(cuerpo.get('estado')).toBe('RESUELTO');
+    expect(cuerpo.get('nota')).toBe('Se cambió la tubería dañada');
+    expect(cuerpo.getAll('fotos').length).toBe(1);
     req.flush({ id: 7, estado: 'RESUELTO' });
+  });
+
+  it('asigna el reporte a un area con PUT', () => {
+    servicio.asignar(7, 'SOPORTE_TECNICO').subscribe();
+    const req = http.expectOne((r) => r.url.endsWith('/admin/reportes/7/asignacion'));
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ area: 'SOPORTE_TECNICO', nota: null });
+    req.flush({ id: 7 });
+  });
+
+  it('publica una actualizacion con POST multipart', () => {
+    servicio.agregarActualizacion(7, 'Llegó el repuesto y se instala mañana', []).subscribe();
+    const req = http.expectOne((r) => r.url.endsWith('/admin/reportes/7/actualizaciones'));
+    expect(req.request.method).toBe('POST');
+    const cuerpo = req.request.body as FormData;
+    expect(cuerpo.get('nota')).toBe('Llegó el repuesto y se instala mañana');
+    expect(cuerpo.has('estado')).toBeFalse();
+    req.flush({ id: 7 });
   });
 
   it('cambia la prioridad con PUT', () => {

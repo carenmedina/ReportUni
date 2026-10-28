@@ -87,31 +87,23 @@ describe('AdminReportes', () => {
     return el;
   }
 
-  it('cambia el estado de un reporte y actualiza la fila', () => {
+  it('muestra el estado como etiqueta y no como lista editable', () => {
     const fixture = crear();
-
-    fixture.componentInstance.cambiarEstado(datos[1] as any, selector('RESUELTO'));
-    const req = http.expectOne((r) => r.url.endsWith('/admin/reportes/1/estado'));
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual({ estado: 'RESUELTO' });
-    req.flush({ ...datos[1], estado: 'RESUELTO' });
-
-    expect(fixture.componentInstance.reportes().find((r) => r.id === 1)?.estado).toBe('RESUELTO');
-    expect(fixture.componentInstance.aviso()?.tipo).toBe('ok');
-    expect(fixture.componentInstance.guardando()).toBeNull();
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('.ru-select-estado')).toBeNull();
+    expect(el.querySelectorAll('.ru-badge').length).toBe(2);
   });
 
-  it('si el servidor rechaza el cambio, devuelve el valor anterior y avisa', () => {
+  it('si el servidor rechaza el cambio de prioridad, devuelve el valor anterior y avisa', () => {
     const fixture = crear();
-    const sel = selector('EN_PROCESO');
+    const sel = selector('BAJA');
 
-    fixture.componentInstance.cambiarEstado(datos[1] as any, sel);
-    http.expectOne((r) => r.url.endsWith('/admin/reportes/1/estado'))
+    fixture.componentInstance.cambiarPrioridad(datos[1] as any, sel);
+    http.expectOne((r) => r.url.endsWith('/admin/reportes/1/prioridad'))
       .flush({ mensaje: 'No encontramos ese reporte.' }, { status: 404, statusText: 'Not Found' });
 
-    expect(sel.value).toBe('PENDIENTE');
+    expect(sel.value).toBe('ALTA');
     expect(fixture.componentInstance.aviso()?.tipo).toBe('error');
-    expect(fixture.componentInstance.reportes().find((r) => r.id === 1)?.estado).toBe('PENDIENTE');
   });
 
   it('cambia la prioridad y no pide nada si el valor no cambio', () => {

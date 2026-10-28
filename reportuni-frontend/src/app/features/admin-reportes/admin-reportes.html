@@ -4,8 +4,9 @@
       <h1>Reportes (gestión)</h1>
       <p>
         Todos los reportes registrados en la plataforma. Busca por código, ubicación, descripción o
-        por quien reportó, y filtra por estado, prioridad, tipo de daño o bloque. Cambia el estado o la
-        prioridad de un reporte directamente desde la tabla, o entra al detalle.
+        por quien reportó, y filtra por estado, prioridad, tipo de daño o bloque. Cambia la prioridad
+        desde la tabla; para cambiar el estado, asignar el reporte o publicar una actualización entra al
+        detalle.
       </p>
     </div>
   </div>
@@ -97,19 +98,13 @@
             </td>
             <td class="ru-td">{{ fecha(reporte) }}</td>
             <td class="ru-td">
-              <select
-                class="ru-select-estado"
+              <span
+                class="ru-badge"
                 [class.ru-badge--resuelto]="reporte.estado === 'RESUELTO'"
                 [class.ru-badge--proceso]="reporte.estado === 'EN_PROCESO'"
                 [class.ru-badge--pendiente]="reporte.estado === 'PENDIENTE'"
-                [disabled]="guardando() === reporte.id"
-                [attr.aria-label]="'Estado del reporte ' + reporte.codigo"
-                (change)="cambiarEstado(reporte, $any($event.target))"
+                >{{ etiquetaEstado(reporte.estado) }}</span
               >
-                @for (op of opcionesEstado; track op.valor) {
-                  <option [value]="op.valor" [selected]="op.valor === reporte.estado">{{ op.etiqueta }}</option>
-                }
-              </select>
             </td>
             <td class="ru-td">
               <select

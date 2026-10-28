@@ -31,9 +31,10 @@ export interface ReporteDetalle {
   descripcion: string;
   latitud: number | null;
   longitud: number | null;
-  notificarPorCorreo: boolean;
   reportadoPor: string;
   fechaCreacion: string;
+  asignadoA: string | null;
+  ultimaActualizacion: string;
   fotos: FotoInfo[];
 }
 

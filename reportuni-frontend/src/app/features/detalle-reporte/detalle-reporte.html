@@ -69,81 +69,34 @@
             <p class="ru-detalle__nota">No se registró ubicación GPS.</p>
           }
         </section>
+
+        <app-actualizaciones-reporte
+          [reporteId]="r.id"
+          [historial]="historial()"
+          [conError]="historialError()"
+          (ampliar)="ampliar($event)"
+        />
       </div>
 
       <aside class="ru-detalle__lateral">
         @if (gestionar) {
-          <section class="ru-tarjeta ru-gestion">
-            <h2>Gestionar reporte</h2>
-
-            <label class="ru-gestion__campo" for="gestion-estado">Estado</label>
-            <select
-              id="gestion-estado"
-              class="ru-gestion__select"
-              [disabled]="guardando()"
-              (change)="cambiarEstado($any($event.target))"
-            >
-              @for (op of opcionesEstado; track op.valor) {
-                <option [value]="op.valor" [selected]="op.valor === r.estado">{{ op.etiqueta }}</option>
-              }
-            </select>
-
-            <label class="ru-gestion__campo" for="gestion-prioridad">Prioridad</label>
-            <select
-              id="gestion-prioridad"
-              class="ru-gestion__select"
-              [disabled]="guardando()"
-              (change)="cambiarPrioridad($any($event.target))"
-            >
-              @for (op of opcionesPrioridad; track op.valor) {
-                <option [value]="op.valor" [selected]="op.valor === r.prioridadEstimada">{{ op.etiqueta }}</option>
-              }
-            </select>
-
-            @if (aviso(); as mensaje) {
-              <p class="ru-gestion__aviso" [class.ru-gestion__aviso--error]="mensaje.tipo === 'error'" role="status">
-                {{ mensaje.texto }}
-              </p>
-            }
-            <p class="ru-detalle__nota">El estudiante verá el nuevo estado en "Mis reportes".</p>
-          </section>
+          <app-gestion-reporte [reporte]="r" (cambiado)="refrescar()" />
         }
 
         <section class="ru-tarjeta">
           <h2>Estado del reporte</h2>
           <ol class="ru-linea">
-            <li class="ru-linea__paso ru-linea__paso--hecho">
-              <strong>Reporte enviado</strong>
-              <span>{{ fecha(r) }}</span>
-            </li>
-            <li
-              class="ru-linea__paso"
-              [class.ru-linea__paso--hecho]="r.estado === 'EN_PROCESO' || r.estado === 'RESUELTO'"
-            >
-              <strong>En proceso</strong>
-            </li>
-            <li class="ru-linea__paso" [class.ru-linea__paso--hecho]="r.estado === 'RESUELTO'">
-              <strong>Resuelto</strong>
-            </li>
+            @for (paso of pasos(); track $index) {
+              <li
+                class="ru-linea__paso"
+                [class.ru-linea__paso--hecho]="paso.estado === 'hecho'"
+                [class.ru-linea__paso--actual]="paso.estado === 'actual'"
+              >
+                <strong>{{ paso.titulo }}</strong>
+                <span>{{ paso.detalle }}</span>
+              </li>
+            }
           </ol>
-        </section>
-
-        <section class="ru-tarjeta">
-          <h2>Historial de cambios</h2>
-          @if (historialError()) {
-            <p class="ru-detalle__nota">No pudimos cargar el historial.</p>
-          } @else {
-            <ul class="ru-historial">
-              @for (h of historial(); track h.id) {
-                <li class="ru-historial__item">
-                  <strong>{{ descripcionCambio(h) }}</strong>
-                  <span>{{ h.realizadoPor }} · {{ fechaHistorial(h.fecha) }}</span>
-                </li>
-              } @empty {
-                <li class="ru-detalle__nota">Aún no hay cambios registrados.</li>
-              }
-            </ul>
-          }
         </section>
 
         <section class="ru-tarjeta">
@@ -155,6 +108,10 @@
             <dd>{{ etiquetaTipoDano(r.tipoDano) }}</dd>
             <dt>Prioridad</dt>
             <dd>{{ etiquetaPrioridad(r.prioridadEstimada) }}</dd>
+            <dt>Asignado a</dt>
+            <dd>{{ etiquetaArea(r.asignadoA) }}</dd>
+            <dt>Última actualización</dt>
+            <dd>{{ ultimaActualizacion(r) }}</dd>
           </dl>
         </section>
       </aside>

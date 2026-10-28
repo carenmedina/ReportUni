@@ -38,9 +38,28 @@ export class AdminReporteService {
     return this.http.get<AdminReporteItem[]>(this.base, { params });
   }
 
-  // Semana 7: gestion de estados (el backend responde con el reporte ya actualizado)
-  cambiarEstado(id: number, estado: EstadoReporte): Observable<AdminReporteItem> {
-    return this.http.put<AdminReporteItem>(`${this.base}/${id}/estado`, { estado });
+  // Fase 2: el cambio de estado lleva una explicacion y fotos de evidencia (obligatorias al resolver)
+  cambiarEstado(id: number, estado: EstadoReporte, nota: string, fotos: File[]): Observable<AdminReporteItem> {
+    return this.http.post<AdminReporteItem>(`${this.base}/${id}/estado`, this.formulario(nota, fotos, estado));
+  }
+
+  asignar(id: number, area: string, nota?: string): Observable<AdminReporteItem> {
+    return this.http.put<AdminReporteItem>(`${this.base}/${id}/asignacion`, { area, nota: nota || null });
+  }
+
+  // Novedad del proceso (por ejemplo, un repuesto que tarda mas) sin cambiar el estado
+  agregarActualizacion(id: number, nota: string, fotos: File[]): Observable<AdminReporteItem> {
+    return this.http.post<AdminReporteItem>(`${this.base}/${id}/actualizaciones`, this.formulario(nota, fotos));
+  }
+
+  private formulario(nota: string, fotos: File[], estado?: EstadoReporte): FormData {
+    const formData = new FormData();
+    if (estado) {
+      formData.append('estado', estado);
+    }
+    formData.append('nota', nota.trim());
+    fotos.forEach((foto) => formData.append('fotos', foto, foto.name));
+    return formData;
   }
 
   cambiarPrioridad(id: number, prioridad: PrioridadReporte): Observable<AdminReporteItem> {
@@ -51,6 +70,8 @@ export class AdminReporteService {
     switch (error.status) {
       case 400:
         return error.error?.mensaje ?? 'El cambio no es válido.';
+      case 413:
+        return 'Las fotografías superan el tamaño permitido. Usa fotos de máximo 10 MB cada una.';
       case 404:
         return 'No encontramos ese reporte.';
       case 0:

@@ -1,0 +1,53 @@
+<div class="sf">
+  @if (esMovil) {
+    <div class="sf__opciones">
+      <button type="button" class="ru-btn-secondary" [disabled]="!puedeAgregar()" (click)="galeria.click()">
+        Seleccionar de la galería
+      </button>
+      <button type="button" class="ru-btn-secondary" [disabled]="!puedeAgregar()" (click)="archivos.click()">
+        Seleccionar de archivos
+      </button>
+      <button type="button" class="ru-btn-secondary" [disabled]="!puedeAgregar()" (click)="camara.click()">
+        Tomar foto
+      </button>
+    </div>
+    <input #galeria type="file" accept="image/jpeg,image/png" multiple hidden (change)="alSeleccionar($event)" />
+    <input #archivos type="file" accept=".jpg,.jpeg,.png" multiple hidden (change)="alSeleccionar($event)" />
+    <input #camara type="file" accept="image/*" capture="environment" hidden (change)="alSeleccionar($event)" />
+    <small class="sf__ayuda">JPG o PNG · máx. 10 MB por foto · hasta {{ limite }} fotos</small>
+  } @else {
+    <label
+      class="sf__zona"
+      [class.sf__zona--activa]="arrastrando()"
+      (dragover)="alArrastrarSobre($event)"
+      (dragleave)="alSalirArrastre($event)"
+      (drop)="alSoltar($event)"
+    >
+      <input
+        type="file"
+        accept="image/jpeg,image/png"
+        multiple
+        [disabled]="!puedeAgregar()"
+        (change)="alSeleccionar($event)"
+        hidden
+      />
+      <strong>Seleccionar archivos</strong>
+      <small>o arrástralos aquí · JPG o PNG · máx. 10 MB por foto · hasta {{ limite }} fotos</small>
+    </label>
+  }
+
+  @if (error(); as mensaje) {
+    <small class="sf__error" role="alert">{{ mensaje }}</small>
+  }
+
+  @if (vistas().length > 0) {
+    <ul class="sf__miniaturas">
+      @for (v of vistas(); track v.url; let i = $index) {
+        <li>
+          <img [src]="v.url" [alt]="v.archivo.name" />
+          <button type="button" (click)="quitar(i)" [attr.aria-label]="'Quitar ' + v.archivo.name">×</button>
+        </li>
+      }
+    </ul>
+  }
+</div>

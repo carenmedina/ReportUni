@@ -179,6 +179,15 @@
   }
 }
 
+.ru-linea__paso--actual {
+  color: #2b6cb0;
+  font-weight: 700;
+
+  &::before {
+    background: #2b6cb0;
+  }
+}
+
 .ru-datos {
   margin: 0;
   display: grid;
@@ -262,65 +271,4 @@
   .ru-detalle__cuerpo {
     grid-template-columns: minmax(0, 1fr);
   }
-}
-.ru-gestion__campo {
-  display: block;
-  font-size: 11.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--ru-text-soft);
-  margin: 10px 0 4px 0;
-}
-
-.ru-gestion__select {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 9px 12px;
-  border: 1px solid var(--ru-border-input);
-  border-radius: 4px;
-  font-size: 13px;
-  font-family: inherit;
-  background: #ffffff;
-  color: #333333;
-}
-
-.ru-gestion__select:disabled {
-  opacity: 0.6;
-  cursor: progress;
-}
-
-.ru-gestion__aviso {
-  margin: 12px 0 0 0;
-  padding: 8px 10px;
-  border-radius: 4px;
-  font-size: 12.5px;
-  background: var(--ru-green-light);
-  color: #2e7d32;
-}
-
-.ru-gestion__aviso--error {
-  background: #fdecea;
-  color: #c0392b;
-}
-
-.ru-historial {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.ru-historial__item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 0 8px 12px;
-  border-left: 3px solid var(--ru-green);
-  margin-bottom: 8px;
-  font-size: 12.5px;
-}
-
-.ru-historial__item span {
-  color: #888888;
-  font-size: 11.5px;
 }

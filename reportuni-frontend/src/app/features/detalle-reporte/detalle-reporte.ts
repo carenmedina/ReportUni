@@ -1,8 +1,7 @@
-import { Component, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
 import {
   FotoInfo,
   ReporteDetalle,
@@ -14,21 +13,25 @@ import {
 } from '../../core/models/reporte-consulta.model';
 import { ReporteConsultaService } from '../../core/services/reporte-consulta.service';
 import { SeguimientoService } from '../../core/services/seguimiento.service';
-import { HistorialItem, descripcionCambio } from '../../core/models/seguimiento.model';
-import { AdminReporteService } from '../../core/services/admin-reporte.service';
-import { AdminReporteItem, OPCIONES_ESTADO, OPCIONES_PRIORIDAD } from '../../core/models/admin-reporte.model';
-import { EstadoReporte, PrioridadReporte } from '../../core/models/reporte.model';
+import { HistorialItem, etiquetaArea, etiquetaValor } from '../../core/models/seguimiento.model';
+import { GestionReporte } from './gestion-reporte/gestion-reporte';
+import { ActualizacionesReporte } from './actualizaciones-reporte/actualizaciones-reporte';
+
+interface PasoLineaTiempo {
+  titulo: string;
+  detalle: string;
+  estado: 'hecho' | 'actual' | 'pendiente';
+}
 
 @Component({
   selector: 'app-detalle-reporte',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, GestionReporte, ActualizacionesReporte],
   templateUrl: './detalle-reporte.html',
   styleUrl: './detalle-reporte.scss',
 })
 export class DetalleReporte implements OnDestroy {
   private readonly servicio = inject(ReporteConsultaService);
-  private readonly adminServicio = inject(AdminReporteService);
   private readonly seguimiento = inject(SeguimientoService);
   private readonly ruta = inject(ActivatedRoute);
 
@@ -36,21 +39,16 @@ export class DetalleReporte implements OnDestroy {
   readonly volverA: string = this.ruta.snapshot.data['volverA'] ?? '/mis-reportes';
   readonly volverTexto: string = this.ruta.snapshot.data['volverTexto'] ?? 'Mis reportes';
 
-  // Semana 7: solo el administrador (ruta admin/reportes/:id) puede gestionar el reporte
+  // Solo el administrador (ruta admin/reportes/:id) puede gestionar el reporte
   readonly gestionar: boolean = this.ruta.snapshot.data['gestionar'] === true;
-  readonly opcionesEstado = OPCIONES_ESTADO;
-  readonly opcionesPrioridad = OPCIONES_PRIORIDAD;
-  readonly guardando = signal(false);
-  readonly aviso = signal<{ tipo: 'ok' | 'error'; texto: string } | null>(null);
-
-  // Semana 8: historial de cambios de estado y prioridad
-  readonly historial = signal<HistorialItem[]>([]);
-  readonly historialError = signal(false);
-  readonly descripcionCambio = descripcionCambio;
 
   readonly reporte = signal<ReporteDetalle | null>(null);
   readonly cargando = signal(true);
   readonly error = signal<string | null>(null);
+
+  // Historial de cambios, notas y evidencias (semana 8 y fase 2)
+  readonly historial = signal<HistorialItem[]>([]);
+  readonly historialError = signal(false);
 
   // id de foto -> URL temporal (blob:) para mostrarla; 'error' si no se pudo cargar
   readonly fotosUrl = signal<Record<number, string>>({});
@@ -61,6 +59,48 @@ export class DetalleReporte implements OnDestroy {
   readonly etiquetaPrioridad = etiquetaPrioridad;
   readonly etiquetaTipoDano = etiquetaTipoDano;
   readonly ubicacionTexto = ubicacionTexto;
+  readonly etiquetaArea = etiquetaArea;
+
+  /** Linea de tiempo: enviado, asignaciones, en proceso y resuelto (segun el historial). */
+  readonly pasos = computed<PasoLineaTiempo[]>(() => {
+    const r = this.reporte();
+    if (!r) {
+      return [];
+    }
+    const antiguosPrimero = [...this.historial()].reverse();
+    const pasos: PasoLineaTiempo[] = [
+      { titulo: 'Reporte enviado', detalle: formatearFecha(r.fechaCreacion, true), estado: 'hecho' },
+    ];
+
+    for (const h of antiguosPrimero.filter((x) => x.tipo === 'ASIGNACION')) {
+      pasos.push({
+        titulo: `${h.valorAnterior ? 'Reasignado a' : 'Asignando a'} ${etiquetaValor(h.valorNuevo)}`,
+        detalle: formatearFecha(h.fecha, true),
+        estado: 'hecho',
+      });
+    }
+
+    const ultimaVez = (estado: string) =>
+      [...antiguosPrimero].reverse().find((h) => h.tipo === 'ESTADO' && h.valorNuevo === estado);
+
+    const aProceso = ultimaVez('EN_PROCESO');
+    const estadoProceso = r.estado === 'EN_PROCESO' ? 'actual' : r.estado === 'RESUELTO' ? 'hecho' : 'pendiente';
+    pasos.push({
+      titulo: 'En proceso',
+      detalle:
+        estadoProceso !== 'pendiente' && aProceso ? `Desde el ${formatearFecha(aProceso.fecha, true)}` : 'Pendiente',
+      estado: estadoProceso,
+    });
+
+    const aResuelto = ultimaVez('RESUELTO');
+    pasos.push({
+      titulo: 'Resuelto',
+      detalle: r.estado === 'RESUELTO' && aResuelto ? formatearFecha(aResuelto.fecha, true) : 'Pendiente',
+      estado: r.estado === 'RESUELTO' ? 'hecho' : 'pendiente',
+    });
+
+    return pasos;
+  });
 
   private urlsCreadas: string[] = [];
 
@@ -92,53 +132,17 @@ export class DetalleReporte implements OnDestroy {
     });
   }
 
-  cambiarEstado(selector: HTMLSelectElement): void {
+  /** Despues de un cambio del administrador: vuelve a pedir el reporte y su historial sin parpadeo. */
+  refrescar(): void {
     const actual = this.reporte();
-    const nuevo = selector.value as EstadoReporte;
-    if (!actual || nuevo === actual.estado) {
+    if (!actual) {
       return;
     }
-    this.guardar(selector, actual.estado, this.adminServicio.cambiarEstado(actual.id, nuevo), 'Estado actualizado.');
-  }
-
-  cambiarPrioridad(selector: HTMLSelectElement): void {
-    const actual = this.reporte();
-    const nueva = selector.value as PrioridadReporte;
-    if (!actual || nueva === actual.prioridadEstimada) {
-      return;
-    }
-    this.guardar(
-      selector,
-      actual.prioridadEstimada,
-      this.adminServicio.cambiarPrioridad(actual.id, nueva),
-      'Prioridad actualizada.',
-    );
-  }
-
-  private guardar(
-    selector: HTMLSelectElement,
-    valorAnterior: string,
-    peticion: Observable<AdminReporteItem>,
-    mensajeOk: string,
-  ): void {
-    this.guardando.set(true);
-    this.aviso.set(null);
-
-    peticion.subscribe({
-      next: (actualizado) => {
-        this.reporte.update((r) =>
-          r ? { ...r, estado: actualizado.estado, prioridadEstimada: actualizado.prioridadEstimada } : r,
-        );
-        this.guardando.set(false);
-        this.aviso.set({ tipo: 'ok', texto: mensajeOk });
-        this.cargarHistorial(actualizado.id);
-      },
-      error: (err: HttpErrorResponse) => {
-        selector.value = valorAnterior;
-        this.guardando.set(false);
-        this.aviso.set({ tipo: 'error', texto: this.adminServicio.interpretarError(err) });
-      },
+    this.servicio.obtenerDetalle(actual.id).subscribe({
+      next: (reporte) => this.reporte.set(reporte),
+      error: () => undefined,
     });
+    this.cargarHistorial(actual.id);
   }
 
   private cargarHistorial(id: number): void {
@@ -147,10 +151,6 @@ export class DetalleReporte implements OnDestroy {
       next: (lista) => this.historial.set(lista),
       error: () => this.historialError.set(true),
     });
-  }
-
-  fechaHistorial(iso: string): string {
-    return formatearFecha(iso, true);
   }
 
   private cargarFoto(reporteId: number, foto: FotoInfo): void {
@@ -176,6 +176,10 @@ export class DetalleReporte implements OnDestroy {
 
   fecha(reporte: ReporteDetalle): string {
     return formatearFecha(reporte.fechaCreacion, true);
+  }
+
+  ultimaActualizacion(reporte: ReporteDetalle): string {
+    return formatearFecha(reporte.ultimaActualizacion, true);
   }
 
   tieneUbicacionGps(reporte: ReporteDetalle): boolean {

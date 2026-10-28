@@ -1,0 +1,42 @@
+<section class="ru-tarjeta">
+  <h2>Actualizaciones del proceso</h2>
+
+  @if (conError()) {
+    <p class="ar__vacio">No pudimos cargar las actualizaciones.</p>
+  } @else {
+    <ul class="ar__lista">
+      @for (h of cronologico(); track h.id) {
+        <li class="ar__item">
+          <span class="ar__avatar" aria-hidden="true">{{ iniciales(h.realizadoPor) }}</span>
+          <div class="ar__burbuja">
+            <div class="ar__cabecera">
+              <strong>{{ h.realizadoPor }}</strong>
+              <span>{{ fecha(h.fecha) }}</span>
+            </div>
+            <p class="ar__cambio">{{ descripcionCambio(h) }}</p>
+            @if (h.nota) {
+              <p class="ar__nota">{{ h.nota }}</p>
+            }
+            @if (h.fotos.length > 0) {
+              <div class="ar__fotos">
+                @for (f of h.fotos; track f.id) {
+                  @if (fotosUrl()[h.id + '-' + f.id]; as url) {
+                    <button type="button" class="ar__foto" (click)="ampliar.emit(url)" [title]="f.nombreOriginal">
+                      <img [src]="url" [alt]="f.nombreOriginal" />
+                    </button>
+                  } @else if (fotosConError()[h.id + '-' + f.id]) {
+                    <span class="ar__foto ar__foto--vacia">No se pudo cargar</span>
+                  } @else {
+                    <span class="ar__foto ar__foto--vacia">Cargando…</span>
+                  }
+                }
+              </div>
+            }
+          </div>
+        </li>
+      } @empty {
+        <li class="ar__vacio">Aún no hay actualizaciones del proceso.</li>
+      }
+    </ul>
+  }
+</section>

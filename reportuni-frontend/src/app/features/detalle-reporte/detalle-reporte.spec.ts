@@ -10,7 +10,7 @@ describe('DetalleReporte', () => {
   const detalle = {
     id: 5, codigo: '0005', tipoDano: 'ASEO', bloque: 'BIBLIOTECA', espacioEspecifico: 'Sala 1',
     prioridadEstimada: 'MEDIA', estado: 'PENDIENTE', descripcion: 'Basura acumulada', latitud: null,
-    longitud: null, notificarPorCorreo: true, reportadoPor: 'Estudiante Uno',
+    longitud: null, asignadoA: null, ultimaActualizacion: '2026-10-20T09:30:00', reportadoPor: 'Estudiante Uno',
     fechaCreacion: '2026-10-20T09:30:00', fotos: [],
   };
 
@@ -35,17 +35,6 @@ describe('DetalleReporte', () => {
     return fixture;
   }
 
-  function selector(valor: string): HTMLSelectElement {
-    const el = document.createElement('select');
-    ['PENDIENTE', 'EN_PROCESO', 'RESUELTO', 'ALTA', 'MEDIA', 'BAJA'].forEach((v) => {
-      const op = document.createElement('option');
-      op.value = v;
-      el.appendChild(op);
-    });
-    el.value = valor;
-    return el;
-  }
-
   afterEach(() => http.verify());
 
   it('el estudiante no ve el panel de gestion', () => {
@@ -57,51 +46,39 @@ describe('DetalleReporte', () => {
     expect(el.textContent).toContain('Basura acumulada');
   });
 
-  it('el administrador ve el panel y puede cambiar el estado', () => {
+  it('el administrador ve el panel de gestion', () => {
     const fixture = crear({ gestionar: true, volverA: '/admin/reportes', volverTexto: 'Reportes (gestión)' });
     const el = fixture.nativeElement as HTMLElement;
     expect(el.textContent).toContain('Gestionar reporte');
     expect(el.textContent).toContain('Reportes (gestión)');
-
-    fixture.componentInstance.cambiarEstado(selector('EN_PROCESO'));
-    const req = http.expectOne((r) => r.url.endsWith('/admin/reportes/5/estado'));
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual({ estado: 'EN_PROCESO' });
-    req.flush({ ...detalle, estado: 'EN_PROCESO', reportadoPor: 'Estudiante Uno', reportadoPorCorreo: 'e1@fet.edu.co' });
-    // Semana 8: despues de guardar se vuelve a pedir el historial
-    http.expectOne((r) => r.url.endsWith('/reportes/5/historial')).flush([]);
-
-    expect(fixture.componentInstance.reporte()?.estado).toBe('EN_PROCESO');
-    expect(fixture.componentInstance.aviso()?.tipo).toBe('ok');
+    expect(el.textContent).toContain('Publicar actualización');
   });
 
-  it('muestra el error si el servidor rechaza el cambio de prioridad', () => {
+  it('refrescar vuelve a pedir el reporte y su historial', () => {
     const fixture = crear({ gestionar: true });
-    const sel = selector('ALTA');
-
-    fixture.componentInstance.cambiarPrioridad(sel);
-    http.expectOne((r) => r.url.endsWith('/admin/reportes/5/prioridad'))
-      .flush({ mensaje: 'El reporte ya tiene prioridad Alta.' }, { status: 400, statusText: 'Bad Request' });
-
-    expect(sel.value).toBe('MEDIA');
-    expect(fixture.componentInstance.aviso()).toEqual({ tipo: 'error', texto: 'El reporte ya tiene prioridad Alta.' });
-    expect(fixture.componentInstance.reporte()?.prioridadEstimada).toBe('MEDIA');
+    fixture.componentInstance.refrescar();
+    http.expectOne((r) => r.url.endsWith('/reportes/5')).flush({ ...detalle, estado: 'EN_PROCESO', asignadoA: 'SOPORTE_TECNICO' });
+    http.expectOne((r) => r.url.endsWith('/reportes/5/historial')).flush([]);
+    expect(fixture.componentInstance.reporte()?.estado).toBe('EN_PROCESO');
   });
 
-  it('muestra el historial de cambios del reporte', () => {
+  it('muestra las actualizaciones, la linea de tiempo y el campo Asignado a', () => {
     historialInicial = [
-      { id: 1, tipo: 'ESTADO', valorAnterior: 'PENDIENTE', valorNuevo: 'EN_PROCESO', realizadoPor: 'Administrador', fecha: '2026-10-21T10:00:00' },
+      { id: 2, tipo: 'ESTADO', valorAnterior: 'PENDIENTE', valorNuevo: 'EN_PROCESO', nota: 'Técnico en camino', realizadoPor: 'Administrador', fecha: '2026-10-21T10:00:00', fotos: [] },
+      { id: 1, tipo: 'ASIGNACION', valorAnterior: '', valorNuevo: 'SOPORTE_TECNICO', nota: null, realizadoPor: 'Administrador', fecha: '2026-10-20T10:00:00', fotos: [] },
     ];
     const fixture = crear({});
     const el = fixture.nativeElement as HTMLElement;
 
-    expect(el.textContent).toContain('Historial de cambios');
     expect(el.textContent).toContain('Estado: Pendiente → En proceso');
-    expect(el.textContent).toContain('Administrador');
+    expect(el.textContent).toContain('Técnico en camino');
+    expect(el.textContent).toContain('Asignando a Soporte Técnico');
+    expect(el.textContent).toContain('Asignado a');
+    expect(el.textContent).toContain('Última actualización');
   });
 
-  it('indica cuando aun no hay cambios', () => {
+  it('indica cuando aun no hay actualizaciones', () => {
     const fixture = crear({});
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Aún no hay cambios registrados.');
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Aún no hay actualizaciones del proceso.');
   });
 });

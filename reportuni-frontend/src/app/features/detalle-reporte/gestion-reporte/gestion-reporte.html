@@ -1,0 +1,115 @@
+<section class="ru-tarjeta ru-gestion">
+  <h2>Gestionar reporte</h2>
+
+  <!-- Prioridad -->
+  <label class="ru-gestion__campo" for="gestion-prioridad">Prioridad</label>
+  <select
+    id="gestion-prioridad"
+    class="ru-gestion__select"
+    [disabled]="ocupado()"
+    (change)="cambiarPrioridad($any($event.target))"
+  >
+    @for (op of opcionesPrioridad; track op.valor) {
+      <option [value]="op.valor" [selected]="op.valor === reporte().prioridadEstimada">{{ op.etiqueta }}</option>
+    }
+  </select>
+  @if (avisoDe('prioridad'); as a) {
+    <p class="ru-gestion__aviso" [class.ru-gestion__aviso--error]="a.tipo === 'error'" role="status">{{ a.texto }}</p>
+  }
+
+  <!-- Asignacion -->
+  <label class="ru-gestion__campo" for="gestion-area">Asignado a</label>
+  <div class="ru-gestion__fila">
+    <select
+      id="gestion-area"
+      class="ru-gestion__select"
+      [disabled]="ocupado()"
+      (change)="areaElegida.set($any($event.target).value)"
+    >
+      <option value="" [selected]="!areaMostrada()">Seleccionar equipo…</option>
+      @for (op of opcionesArea; track op.valor) {
+        <option [value]="op.valor" [selected]="op.valor === areaMostrada()">{{ op.etiqueta }}</option>
+      }
+    </select>
+    <button
+      type="button"
+      class="ru-btn-secondary ru-gestion__boton"
+      [disabled]="ocupado() || !areaElegida() || areaElegida() === reporte().asignadoA"
+      (click)="asignar()"
+    >
+      {{ guardando() === 'asignacion' ? 'Asignando…' : 'Asignar' }}
+    </button>
+  </div>
+  @if (avisoDe('asignacion'); as a) {
+    <p class="ru-gestion__aviso" [class.ru-gestion__aviso--error]="a.tipo === 'error'" role="status">{{ a.texto }}</p>
+  }
+
+  <hr class="ru-gestion__separador" />
+
+  <!-- Cambio de estado con explicacion y evidencia -->
+  <h3>Cambiar estado</h3>
+  <label class="ru-gestion__campo" for="gestion-estado">Nuevo estado</label>
+  <select
+    id="gestion-estado"
+    class="ru-gestion__select"
+    [disabled]="ocupado()"
+    (change)="estadoElegido.set($any($event.target).value)"
+  >
+    <option value="" [selected]="!estadoElegido()">Selecciona una opción</option>
+    @for (op of estadosDisponibles(); track op.valor) {
+      <option [value]="op.valor" [selected]="op.valor === estadoElegido()">{{ op.etiqueta }}</option>
+    }
+  </select>
+
+  @if (estadoElegido()) {
+    <label class="ru-gestion__campo" for="gestion-nota-estado">{{ etiquetaNotaEstado() }} *</label>
+    <textarea
+      id="gestion-nota-estado"
+      class="ru-gestion__texto"
+      rows="4"
+      maxlength="1000"
+      [disabled]="ocupado()"
+      [value]="notaEstado()"
+      (input)="notaEstado.set($any($event.target).value)"
+      placeholder="Ej: Se contactó al técnico; la visita está programada para el jueves."
+    ></textarea>
+
+    <span class="ru-gestion__campo">
+      {{ fotosObligatorias() ? 'Fotos del arreglo *' : 'Fotos de evidencia (opcional)' }}
+    </span>
+    <app-selector-fotos [(fotos)]="fotosEstado" [deshabilitado]="ocupado()" />
+  }
+
+  @if (avisoDe('estado'); as a) {
+    <p class="ru-gestion__aviso" [class.ru-gestion__aviso--error]="a.tipo === 'error'" role="status">{{ a.texto }}</p>
+  }
+  <button type="button" class="ru-btn-primary ru-gestion__enviar" [disabled]="ocupado() || !estadoElegido()" (click)="guardarEstado()">
+    {{ guardando() === 'estado' ? 'Guardando…' : 'Guardar cambio de estado' }}
+  </button>
+
+  <hr class="ru-gestion__separador" />
+
+  <!-- Actualizacion del proceso sin cambiar el estado -->
+  <h3>Publicar actualización</h3>
+  <p class="ru-detalle__nota">Para avisar una novedad sin cambiar el estado (por ejemplo, un repuesto que tarda más).</p>
+  <label class="ru-gestion__campo" for="gestion-nota-actualizacion">Novedad *</label>
+  <textarea
+    id="gestion-nota-actualizacion"
+    class="ru-gestion__texto"
+    rows="3"
+    maxlength="1000"
+    [disabled]="ocupado()"
+    [value]="notaActualizacion()"
+    (input)="notaActualizacion.set($any($event.target).value)"
+    placeholder="Ej: El técnico solicitó un repuesto; el tiempo estimado es de 2 días hábiles."
+  ></textarea>
+  <span class="ru-gestion__campo">Fotos (opcional)</span>
+  <app-selector-fotos [(fotos)]="fotosActualizacion" [deshabilitado]="ocupado()" />
+
+  @if (avisoDe('actualizacion'); as a) {
+    <p class="ru-gestion__aviso" [class.ru-gestion__aviso--error]="a.tipo === 'error'" role="status">{{ a.texto }}</p>
+  }
+  <button type="button" class="ru-btn-secondary ru-gestion__enviar" [disabled]="ocupado()" (click)="publicarActualizacion()">
+    {{ guardando() === 'actualizacion' ? 'Publicando…' : 'Publicar actualización' }}
+  </button>
+</section>

@@ -14,6 +14,13 @@ export class SeguimientoService {
     return this.http.get<HistorialItem[]>(`${this.api}/reportes/${reporteId}/historial`);
   }
 
+  // Las fotos de evidencia tambien estan protegidas con JWT: se piden como blob
+  fotoHistorial(reporteId: number, historialId: number, fotoId: number): Observable<Blob> {
+    return this.http.get(`${this.api}/reportes/${reporteId}/historial/${historialId}/fotos/${fotoId}`, {
+      responseType: 'blob',
+    });
+  }
+
   notificaciones(): Observable<Notificacion[]> {
     return this.http.get<Notificacion[]>(`${this.api}/notificaciones`);
   }

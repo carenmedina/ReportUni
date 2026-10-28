@@ -8,7 +8,6 @@ import {
   FILTROS_VACIOS,
   FiltrosAdmin,
   OPCIONES_BLOQUE,
-  OPCIONES_ESTADO,
   OPCIONES_PRIORIDAD,
   OPCIONES_TIPO_DANO,
 } from '../../core/models/admin-reporte.model';
@@ -20,7 +19,7 @@ import {
   ubicacionTexto,
 } from '../../core/models/reporte-consulta.model';
 import { AdminReporteService } from '../../core/services/admin-reporte.service';
-import { EstadoReporte, PrioridadReporte } from '../../core/models/reporte.model';
+import { PrioridadReporte } from '../../core/models/reporte.model';
 
 @Component({
   selector: 'app-admin-reportes',
@@ -39,10 +38,9 @@ export class AdminReportes implements OnDestroy {
 
   readonly opcionesTipo = OPCIONES_TIPO_DANO;
   readonly opcionesBloque = OPCIONES_BLOQUE;
-  readonly opcionesEstado = OPCIONES_ESTADO;
   readonly opcionesPrioridad = OPCIONES_PRIORIDAD;
 
-  // Semana 7: cambio rapido de estado y prioridad desde la tabla
+  // El estado se cambia en el detalle (con explicacion y evidencia); aqui solo la prioridad
   readonly guardando = signal<number | null>(null);
   readonly aviso = signal<{ tipo: 'ok' | 'error'; texto: string } | null>(null);
 
@@ -101,20 +99,6 @@ export class AdminReportes implements OnDestroy {
     clearTimeout(this.temporizador);
     this.filtros.set({ ...FILTROS_VACIOS });
     this.cargar();
-  }
-
-  cambiarEstado(reporte: AdminReporteItem, selector: HTMLSelectElement): void {
-    const nuevo = selector.value as EstadoReporte;
-    if (nuevo === reporte.estado) {
-      return;
-    }
-    this.guardar(
-      reporte,
-      selector,
-      reporte.estado,
-      this.servicio.cambiarEstado(reporte.id, nuevo),
-      `Reporte #${reporte.codigo}: estado cambiado a "${etiquetaEstado(nuevo)}".`,
-    );
   }
 
   cambiarPrioridad(reporte: AdminReporteItem, selector: HTMLSelectElement): void {
