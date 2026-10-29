@@ -124,7 +124,7 @@ public class SeguimientoService {
     private void notificarAlDueno(Reporte reporte, Usuario actor, String mensaje) {
         Usuario dueno = reporte.getUsuario();
         if (dueno.getId().equals(actor.getId())) {
-            return; // nadie se notifica a si mismo
+            return;
         }
         notificacionRepository.save(Notificacion.builder()
                 .usuario(dueno)
@@ -178,14 +178,13 @@ public class SeguimientoService {
                 : reporteRepository.existsByIdAndUsuarioId(reporteId, usuario.getId());
 
         if (!puedeVerlo) {
-            // igual que en el detalle: un estudiante no se entera de que el reporte existe
             throw new ReporteService.ReporteNoEncontradoException("No encontramos ese reporte.");
         }
     }
 
     @Transactional(readOnly = true)
     public List<NotificacionResponse> misNotificaciones(Usuario usuario) {
-        return notificacionRepository.findTop30ByUsuarioIdOrderByFechaCreacionDescIdDesc(usuario.getId())
+        return notificacionRepository.findTop30ByUsuarioIdAndComentarioFalseOrderByFechaCreacionDescIdDesc(usuario.getId())
                 .stream()
                 .map(n -> new NotificacionResponse(
                         n.getId(),
@@ -199,7 +198,7 @@ public class SeguimientoService {
 
     @Transactional(readOnly = true)
     public TotalNoLeidasResponse totalNoLeidas(Usuario usuario) {
-        return new TotalNoLeidasResponse(notificacionRepository.countByUsuarioIdAndLeidaFalse(usuario.getId()));
+        return new TotalNoLeidasResponse(notificacionRepository.countByUsuarioIdAndComentarioFalseAndLeidaFalse(usuario.getId()));
     }
 
     @Transactional
@@ -212,7 +211,7 @@ public class SeguimientoService {
 
     @Transactional
     public void marcarTodasLeidas(Usuario usuario) {
-        List<Notificacion> pendientes = notificacionRepository.findByUsuarioIdAndLeidaFalse(usuario.getId());
+        List<Notificacion> pendientes = notificacionRepository.findByUsuarioIdAndComentarioFalseAndLeidaFalse(usuario.getId());
         pendientes.forEach(n -> n.setLeida(true));
         notificacionRepository.saveAll(pendientes);
     }

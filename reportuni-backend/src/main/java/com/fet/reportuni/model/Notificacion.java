@@ -36,6 +36,11 @@ public class Notificacion {
     @Builder.Default
     private boolean leida = false;
 
+    // true: aviso de un comentario nuevo (va al icono de comentarios, no a la campana)
+    @Column(name = "es_comentario", nullable = false)
+    @Builder.Default
+    private boolean comentario = false;
+
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 

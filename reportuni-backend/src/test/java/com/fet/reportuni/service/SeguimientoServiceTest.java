@@ -151,7 +151,7 @@ class SeguimientoServiceTest {
         Notificacion n = Notificacion.builder().id(3L).usuario(estudiante).reporteId(7L)
                 .mensaje("Tu reporte #0007 cambió a estado «Resuelto».")
                 .fechaCreacion(LocalDateTime.of(2026, 10, 22, 8, 0)).build();
-        when(notificacionRepository.findTop30ByUsuarioIdOrderByFechaCreacionDescIdDesc(1L)).thenReturn(List.of(n));
+        when(notificacionRepository.findTop30ByUsuarioIdAndComentarioFalseOrderByFechaCreacionDescIdDesc(1L)).thenReturn(List.of(n));
 
         List<NotificacionResponse> lista = servicio.misNotificaciones(estudiante);
 
@@ -162,7 +162,7 @@ class SeguimientoServiceTest {
 
     @Test
     void cuentaLasNoLeidas() {
-        when(notificacionRepository.countByUsuarioIdAndLeidaFalse(1L)).thenReturn(4L);
+        when(notificacionRepository.countByUsuarioIdAndComentarioFalseAndLeidaFalse(1L)).thenReturn(4L);
 
         assertEquals(4L, servicio.totalNoLeidas(estudiante).total());
     }
@@ -190,7 +190,7 @@ class SeguimientoServiceTest {
     void marcaTodasComoLeidas() {
         Notificacion a = Notificacion.builder().id(1L).usuario(estudiante).reporteId(7L).mensaje("a").build();
         Notificacion b = Notificacion.builder().id(2L).usuario(estudiante).reporteId(7L).mensaje("b").build();
-        when(notificacionRepository.findByUsuarioIdAndLeidaFalse(1L)).thenReturn(List.of(a, b));
+        when(notificacionRepository.findByUsuarioIdAndComentarioFalseAndLeidaFalse(1L)).thenReturn(List.of(a, b));
 
         servicio.marcarTodasLeidas(estudiante);
 
