@@ -5,11 +5,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { NavegacionService } from '../../core/services/navegacion.service';
 import { MenuItem } from '../../core/models/navegacion.model';
 import { NotificacionesCampana } from '../notificaciones-campana/notificaciones-campana';
+import { ComentariosCampana } from '../comentarios-campana/comentarios-campana';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, NotificacionesCampana],
+  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, NotificacionesCampana, ComentariosCampana],
   templateUrl: './layout.html',
   styleUrl: './layout.scss',
 })

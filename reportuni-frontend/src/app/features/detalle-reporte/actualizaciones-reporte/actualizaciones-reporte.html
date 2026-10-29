@@ -1,42 +1,79 @@
 <section class="ru-tarjeta">
-  <h2>Actualizaciones del proceso</h2>
+  <h2>Comentarios y actualizaciones</h2>
 
   @if (conError()) {
-    <p class="ar__vacio">No pudimos cargar las actualizaciones.</p>
-  } @else {
-    <ul class="ar__lista">
-      @for (h of cronologico(); track h.id) {
-        <li class="ar__item">
-          <span class="ar__avatar" aria-hidden="true">{{ iniciales(h.realizadoPor) }}</span>
-          <div class="ar__burbuja">
-            <div class="ar__cabecera">
-              <strong>{{ h.realizadoPor }}</strong>
-              <span>{{ fecha(h.fecha) }}</span>
-            </div>
-            <p class="ar__cambio">{{ descripcionCambio(h) }}</p>
-            @if (h.nota) {
-              <p class="ar__nota">{{ h.nota }}</p>
-            }
-            @if (h.fotos.length > 0) {
-              <div class="ar__fotos">
-                @for (f of h.fotos; track f.id) {
-                  @if (fotosUrl()[h.id + '-' + f.id]; as url) {
-                    <button type="button" class="ar__foto" (click)="ampliar.emit(url)" [title]="f.nombreOriginal">
-                      <img [src]="url" [alt]="f.nombreOriginal" />
-                    </button>
-                  } @else if (fotosConError()[h.id + '-' + f.id]) {
-                    <span class="ar__foto ar__foto--vacia">No se pudo cargar</span>
-                  } @else {
-                    <span class="ar__foto ar__foto--vacia">Cargando…</span>
-                  }
-                }
-              </div>
-            }
-          </div>
-        </li>
-      } @empty {
-        <li class="ar__vacio">Aún no hay actualizaciones del proceso.</li>
-      }
-    </ul>
+    <p class="ar__aviso">No pudimos cargar las actualizaciones del proceso.</p>
   }
+  @if (comentariosError()) {
+    <p class="ar__aviso">
+      No pudimos cargar los comentarios.
+      <button type="button" class="ar__enlace" (click)="reintentar()">Reintentar</button>
+    </p>
+  }
+
+  <ul class="ar__lista">
+    @for (e of entradas(); track e.clave) {
+      <li class="ar__item">
+        <span class="ar__avatar" [class.ar__avatar--propio]="e.propio" aria-hidden="true">{{ iniciales(e.autor) }}</span>
+        <div class="ar__burbuja" [class.ar__burbuja--propia]="e.propio">
+          <div class="ar__cabecera">
+            <strong>
+              {{ e.autor }}@if (e.propio) { (yo) }
+              @if (e.esAdmin) {
+                <span class="ar__rol">Administración</span>
+              }
+            </strong>
+            <span>{{ fecha(e.fecha) }}</span>
+          </div>
+          @if (e.titulo) {
+            <p class="ar__cambio">{{ e.titulo }}</p>
+          }
+          @if (e.texto) {
+            <p class="ar__nota">{{ e.texto }}</p>
+          }
+          @if (e.fotos.length > 0) {
+            <div class="ar__fotos">
+              @for (f of e.fotos; track f.id) {
+                @if (fotosUrl()[e.historialId + '-' + f.id]; as url) {
+                  <button type="button" class="ar__foto" (click)="ampliar.emit(url)" [title]="f.nombreOriginal">
+                    <img [src]="url" [alt]="f.nombreOriginal" />
+                  </button>
+                } @else if (fotosConError()[e.historialId + '-' + f.id]) {
+                  <span class="ar__foto ar__foto--vacia">No se pudo cargar</span>
+                } @else {
+                  <span class="ar__foto ar__foto--vacia">Cargando…</span>
+                }
+              }
+            </div>
+          }
+        </div>
+      </li>
+    } @empty {
+      <li class="ar__vacio">Aún no hay comentarios ni actualizaciones del proceso.</li>
+    }
+  </ul>
+
+  <form class="ar__form" (submit)="$event.preventDefault(); enviar()">
+    <label class="ar__etiqueta" for="ar-comentario">Comentario</label>
+    <textarea
+      id="ar-comentario"
+      class="ar__texto"
+      rows="3"
+      [maxLength]="limite"
+      [disabled]="enviando()"
+      [value]="texto()"
+      (input)="cambiarTexto($any($event.target).value)"
+      (keydown.control.enter)="enviar()"
+      placeholder="Escribe un comentario…"
+    ></textarea>
+    <div class="ar__pie">
+      <span class="ar__contador">{{ texto().length }}/{{ limite }}</span>
+      <button type="submit" class="ru-btn-primary" [disabled]="enviando()">
+        {{ enviando() ? 'Enviando…' : 'Enviar' }}
+      </button>
+    </div>
+    @if (errorEnvio(); as mensaje) {
+      <p class="ar__error" role="alert">{{ mensaje }}</p>
+    }
+  </form>
 </section>

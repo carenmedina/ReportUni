@@ -66,7 +66,9 @@ export class NotificacionesCampana implements OnInit, OnDestroy {
         error: () => undefined,
       });
     }
-    this.router.navigate(['/mis-reportes', n.reporteId]);
+    // El administrador gestiona el reporte desde su propia pantalla
+    const esAdmin = this.auth.usuarioActual()?.rol === 'ADMINISTRADOR';
+    this.router.navigate([esAdmin ? '/admin/reportes' : '/mis-reportes', n.reporteId]);
   }
 
   marcarTodas(): void {

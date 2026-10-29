@@ -111,6 +111,82 @@
   border-style: dashed;
 }
 
+.ar__avatar--propio {
+  background: var(--ru-green-dark);
+}
+
+.ar__burbuja--propia {
+  background: var(--ru-green-light);
+}
+
+.ar__rol {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: var(--ru-green);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.ar__aviso {
+  margin: 0 0 12px 0;
+  font-size: 12.5px;
+  color: var(--ru-danger);
+}
+
+.ar__enlace {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--ru-green-dark);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+.ar__form {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ru-border);
+}
+
+.ar__etiqueta {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.ar__texto {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1px solid var(--ru-border);
+  border-radius: 4px;
+  font: inherit;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.ar__pie {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.ar__contador {
+  font-size: 11.5px;
+  color: var(--ru-text-faint);
+}
+
+.ar__error {
+  margin: 8px 0 0 0;
+  font-size: 12.5px;
+  color: var(--ru-danger);
+}
+
 .ar__vacio {
   margin: 0;
   font-size: 12.5px;

@@ -15,8 +15,12 @@ describe('DetalleReporte', () => {
   };
 
   let historialInicial: unknown[] = [];
+  let comentariosIniciales: unknown[] = [];
 
-  beforeEach(() => (historialInicial = []));
+  beforeEach(() => {
+    historialInicial = [];
+    comentariosIniciales = [];
+  });
 
   function crear(data: Record<string, unknown>) {
     TestBed.configureTestingModule({
@@ -31,6 +35,9 @@ describe('DetalleReporte', () => {
     const fixture = TestBed.createComponent(DetalleReporte);
     http.expectOne((r) => r.url.endsWith('/reportes/5')).flush(detalle);
     http.expectOne((r) => r.url.endsWith('/reportes/5/historial')).flush(historialInicial);
+    fixture.detectChanges();
+    // Fase 3: la tarjeta de comentarios pide los comentarios del reporte
+    http.expectOne((r) => r.url.endsWith('/reportes/5/comentarios')).flush(comentariosIniciales);
     fixture.detectChanges();
     return fixture;
   }
@@ -77,8 +84,21 @@ describe('DetalleReporte', () => {
     expect(el.textContent).toContain('Última actualización');
   });
 
-  it('indica cuando aun no hay actualizaciones', () => {
+  it('indica cuando aun no hay comentarios ni actualizaciones', () => {
     const fixture = crear({});
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Aún no hay actualizaciones del proceso.');
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Aún no hay comentarios ni actualizaciones del proceso.');
+  });
+
+  it('muestra los comentarios del reporte junto a las actualizaciones', () => {
+    comentariosIniciales = [
+      { id: 1, reporteId: 5, texto: 'Ya enviamos al técnico', autor: 'Ana Admin', rol: 'ADMINISTRADOR', propio: false, fecha: '2026-10-21T11:00:00' },
+      { id: 2, reporteId: 5, texto: 'Muchas gracias', autor: 'Estudiante Uno', rol: 'ESTUDIANTE', propio: true, fecha: '2026-10-21T12:00:00' },
+    ];
+    const fixture = crear({});
+    const texto = (fixture.nativeElement as HTMLElement).textContent!;
+
+    expect(texto).toContain('Comentarios y actualizaciones');
+    expect(texto).toContain('Ya enviamos al técnico');
+    expect(texto).toContain('Estudiante Uno (yo)');
   });
 });

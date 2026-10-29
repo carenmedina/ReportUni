@@ -66,6 +66,27 @@ describe('NotificacionesCampana', () => {
     fixture.destroy();
   });
 
+  it('el administrador va al detalle de gestion del reporte', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: AuthService, useValue: { usuarioActual: () => ({ nombreCompleto: 'Admin', rol: 'ADMINISTRADOR' }) } },
+      ],
+    });
+    http = TestBed.inject(HttpTestingController);
+    const fixture = TestBed.createComponent(NotificacionesCampana);
+    fixture.detectChanges();
+    http.expectOne((r) => r.url.endsWith('/notificaciones/no-leidas')).flush({ total: 0 });
+    const navegar = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+
+    fixture.componentInstance.abrirNotificacion({ ...vieja, reporteId: 6 });
+
+    expect(navegar).toHaveBeenCalledWith(['/admin/reportes', 6]);
+    fixture.destroy();
+  });
+
   it('marca todas como leidas', () => {
     const fixture = crear();
     fixture.componentInstance.alternar();
