@@ -86,7 +86,7 @@
           </tr>
           @for (reporte of resumen()?.recientes ?? []; track reporte.id) {
             <tr>
-              <td class="ru-td ru-td--muted"><a [routerLink]="['/admin/reportes', reporte.id]">#{{ reporte.codigo }}</a></td>
+              <td class="ru-td ru-td--muted"><a [routerLink]="['/admin/reportes', reporte.id]">{{ reporte.codigo }}</a></td>
               <td class="ru-td">{{ etiquetaTipoDano(reporte.tipoDano) }}</td>
               <td class="ru-td">{{ ubicacionTexto(reporte.bloque, reporte.espacioEspecifico) }}</td>
               <td class="ru-td">{{ reporte.reportadoPor }}</td>
@@ -134,7 +134,7 @@
 
       <section class="ru-panel ru-home__soporte">
         <h2>¿Necesitas ayuda?</h2>
-        <p>Escríbenos a <a href="mailto:soporte-tic@fet.edu.co">soporte-tic&#64;fet.edu.co</a></p>
+        <p>Escríbenos a <a href="mailto:soporte@fet.edu.co">soporte@fet.edu.co</a></p>
       </section>
     </aside>
   </div>

@@ -57,7 +57,7 @@ class ReporteConsultaControllerTest {
     @Test
     void listaMisReportes() throws Exception {
         when(reporteService.listarMios(any())).thenReturn(List.of(new ReporteResumenResponse(
-                12L, "0012", TipoDano.FUGA_AGUA, Bloque.BLOQUE_A, "Salon 204",
+                12L, "0012", TipoDano.FUGA_AGUA, Bloque.BLOQUE_1, "Salon 204",
                 PrioridadReporte.ALTA, EstadoReporte.PENDIENTE, LocalDateTime.of(2026, 10, 5, 9, 30), 2)));
 
         mockMvc.perform(get("/api/reportes/mis"))
@@ -70,7 +70,7 @@ class ReporteConsultaControllerTest {
     @Test
     void devuelveElDetalleConSusFotos() throws Exception {
         when(reporteService.detalle(any(), eq(12L))).thenReturn(new ReporteDetalleResponse(
-                12L, "0012", TipoDano.FUGA_AGUA, Bloque.BLOQUE_A, "Salon 204", PrioridadReporte.ALTA,
+                12L, "0012", TipoDano.FUGA_AGUA, Bloque.BLOQUE_1, "Salon 204", PrioridadReporte.ALTA,
                 EstadoReporte.PENDIENTE, "Fuga junto a la ventana", 6.2, -75.5, true, "Estudiante Uno",
                 LocalDateTime.of(2026, 10, 5, 9, 30), null, LocalDateTime.of(2026, 10, 5, 9, 30),
                 List.of(new ReporteDetalleResponse.FotoInfo(70L, "dano.jpg", "image/jpeg", 1234, 1))));

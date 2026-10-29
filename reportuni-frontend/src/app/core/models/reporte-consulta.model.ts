@@ -42,18 +42,16 @@ const TIPOS_DANO: Record<string, string> = {
   FUGA_AGUA: 'Fuga de agua',
   DANO_ELECTRICO: 'Daño eléctrico',
   AUDIOVISUAL: 'Equipo audiovisual',
-  TECHO_ESTRUCTURA: 'Techo o estructura',
-  MOBILIARIO: 'Mobiliario',
-  ASEO: 'Aseo',
-  OTRO: 'Otro',
+  ESTRUCTURA: 'Estructura',
+  ASEO: 'Aseo - Limpieza',
+  OTRO: 'Otros',
 };
 
 const BLOQUES: Record<string, string> = {
-  BLOQUE_A: 'Bloque A',
-  BLOQUE_B: 'Bloque B',
-  BLOQUE_C: 'Bloque C',
+  BLOQUE_1: 'Bloque 1',
+  BLOQUE_2: 'Bloque 2',
   BIBLIOTECA: 'Biblioteca',
-  ZONAS_COMUNES: 'Zonas comunes',
+  ZONAS_COMUNES: 'Zonas comunes - Exteriores',
 };
 
 export function etiquetaTipoDano(codigo: string): string {

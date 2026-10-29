@@ -72,7 +72,7 @@ class ReporteControllerTest {
                 .file(new MockMultipartFile("fotos", "dano.jpg", "image/jpeg", JPG))
                 .param("tipoDano", tipoDano)
                 .param("prioridadEstimada", "MEDIA")
-                .param("bloque", "BLOQUE_A")
+                .param("bloque", "BLOQUE_1")
                 .param("espacioEspecifico", "Salon 204")
                 .param("descripcion", "Fuga de agua junto a la ventana del salon")
                 .param("notificarPorCorreo", "true");

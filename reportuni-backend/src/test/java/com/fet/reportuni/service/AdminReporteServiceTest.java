@@ -37,11 +37,11 @@ class AdminReporteServiceTest {
                 .correoInstitucional("estudiante2@fet.edu.co").passwordHash("x").rol(Rol.ESTUDIANTE).build();
 
         todos = List.of(
-                reporte(3L, dos, TipoDano.AUDIOVISUAL, Bloque.BLOQUE_C, "Auditorio",
+                reporte(3L, dos, TipoDano.AUDIOVISUAL, Bloque.ZONAS_COMUNES, "Auditorio",
                         PrioridadReporte.MEDIA, EstadoReporte.EN_PROCESO, "Proyector sin imagen", 3),
-                reporte(2L, uno, TipoDano.FUGA_AGUA, Bloque.BLOQUE_A, "Salon 204",
+                reporte(2L, uno, TipoDano.FUGA_AGUA, Bloque.BLOQUE_1, "Salon 204",
                         PrioridadReporte.ALTA, EstadoReporte.PENDIENTE, "Gotera en el techo", 2),
-                reporte(1L, uno, TipoDano.MOBILIARIO, Bloque.BIBLIOTECA, "Sala de lectura",
+                reporte(1L, uno, TipoDano.OTRO, Bloque.BIBLIOTECA, "Sala de lectura",
                         PrioridadReporte.BAJA, EstadoReporte.RESUELTO, "Silla rota", 1)
         );
     }
@@ -122,7 +122,7 @@ class AdminReporteServiceTest {
         when(reporteRepository.findAllByOrderByFechaCreacionDesc()).thenReturn(todos);
 
         assertEquals(3, servicio.listar(null, null, null, null, "   ").size());
-        assertEquals(1, servicio.listar(EstadoReporte.PENDIENTE, null, null, Bloque.BLOQUE_A, "salon").size());
-        assertTrue(servicio.listar(EstadoReporte.RESUELTO, null, null, Bloque.BLOQUE_A, null).isEmpty());
+        assertEquals(1, servicio.listar(EstadoReporte.PENDIENTE, null, null, Bloque.BLOQUE_1, "salon").size());
+        assertTrue(servicio.listar(EstadoReporte.RESUELTO, null, null, Bloque.BLOQUE_1, null).isEmpty());
     }
 }

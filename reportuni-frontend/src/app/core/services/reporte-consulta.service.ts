@@ -18,9 +18,6 @@ export class ReporteConsultaService {
     return this.http.get<ReporteDetalle>(`${this.base}/${id}`);
   }
 
-  // Las fotos estan protegidas con JWT: un <img src> no puede enviar el token,
-  // asi que se piden como blob (el interceptor agrega el token) y se muestran
-  // con URL.createObjectURL.
   obtenerFoto(reporteId: number, fotoId: number): Observable<Blob> {
     return this.http.get(`${this.base}/${reporteId}/fotos/${fotoId}`, { responseType: 'blob' });
   }

@@ -45,7 +45,7 @@ class AdminReporteGestionControllerTest {
             .correoInstitucional("admin@fet.edu.co").passwordHash("x").rol(Rol.ADMINISTRADOR).build();
 
     private final AdminReporteItem item = new AdminReporteItem(
-            7L, "0007", TipoDano.FUGA_AGUA, Bloque.BLOQUE_A, "Salon 204", PrioridadReporte.MEDIA,
+            7L, "0007", TipoDano.FUGA_AGUA, Bloque.BLOQUE_1, "Salon 204", PrioridadReporte.MEDIA,
             EstadoReporte.EN_PROCESO, "Estudiante Uno", "estudiante1@fet.edu.co",
             LocalDateTime.of(2026, 10, 20, 9, 0));
 

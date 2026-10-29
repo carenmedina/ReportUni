@@ -6,10 +6,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { Notificacion } from '../../core/models/seguimiento.model';
 import { formatearFecha } from '../../core/models/reporte-consulta.model';
 
-/**
- * Fase 3: icono de comentarios del encabezado. Reune los avisos de comentarios hechos en cualquiera
- * de los reportes de la persona; al elegir uno, se abre ese reporte, donde se ve toda la conversacion.
- */
 @Component({
   selector: 'app-comentarios-campana',
   standalone: true,
@@ -72,7 +68,6 @@ export class ComentariosCampana implements OnInit, OnDestroy {
         error: () => undefined,
       });
     }
-    // El administrador gestiona el reporte desde su propia pantalla
     const esAdmin = this.auth.usuarioActual()?.rol === 'ADMINISTRADOR';
     this.router.navigate([esAdmin ? '/admin/reportes' : '/mis-reportes', n.reporteId]);
   }

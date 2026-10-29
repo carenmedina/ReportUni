@@ -11,7 +11,7 @@ describe('ReporteService', () => {
   const datos: NuevoReporteDatos = {
     tipoDano: 'FUGA_AGUA',
     prioridadEstimada: 'MEDIA',
-    bloque: 'BLOQUE_A',
+    bloque: 'BLOQUE_1',
     espacioEspecifico: 'Salón 204',
     descripcion: 'Fuga de agua en el techo del salón',
     latitud: 10.5,

@@ -87,6 +87,10 @@ button {
   font-family: inherit;
 }
 
+  .ru-btn-primary:hover {
+    color: var(--ru-green-darker);
+  }
+
 .ru-btn-primary:disabled {
   opacity: 0.6;
   cursor: not-allowed;

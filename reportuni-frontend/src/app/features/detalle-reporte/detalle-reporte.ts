@@ -35,22 +35,18 @@ export class DetalleReporte implements OnDestroy {
   private readonly seguimiento = inject(SeguimientoService);
   private readonly ruta = inject(ActivatedRoute);
 
-  // La misma pantalla sirve al estudiante y al administrador: la ruta indica a donde volver
   readonly volverA: string = this.ruta.snapshot.data['volverA'] ?? '/mis-reportes';
   readonly volverTexto: string = this.ruta.snapshot.data['volverTexto'] ?? 'Mis reportes';
 
-  // Solo el administrador (ruta admin/reportes/:id) puede gestionar el reporte
   readonly gestionar: boolean = this.ruta.snapshot.data['gestionar'] === true;
 
   readonly reporte = signal<ReporteDetalle | null>(null);
   readonly cargando = signal(true);
   readonly error = signal<string | null>(null);
 
-  // Historial de cambios, notas y evidencias (semana 8 y fase 2)
   readonly historial = signal<HistorialItem[]>([]);
   readonly historialError = signal(false);
 
-  // id de foto -> URL temporal (blob:) para mostrarla; 'error' si no se pudo cargar
   readonly fotosUrl = signal<Record<number, string>>({});
   readonly fotosConError = signal<Record<number, boolean>>({});
   readonly fotoAmpliada = signal<string | null>(null);
@@ -61,7 +57,6 @@ export class DetalleReporte implements OnDestroy {
   readonly ubicacionTexto = ubicacionTexto;
   readonly etiquetaArea = etiquetaArea;
 
-  /** Linea de tiempo: enviado, asignaciones, en proceso y resuelto (segun el historial). */
   readonly pasos = computed<PasoLineaTiempo[]>(() => {
     const r = this.reporte();
     if (!r) {
@@ -132,7 +127,6 @@ export class DetalleReporte implements OnDestroy {
     });
   }
 
-  /** Despues de un cambio del administrador: vuelve a pedir el reporte y su historial sin parpadeo. */
   refrescar(): void {
     const actual = this.reporte();
     if (!actual) {

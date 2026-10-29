@@ -21,7 +21,7 @@ describe('Home (administrador)', () => {
     http.expectOne((r) => r.url.endsWith('/admin/reportes/resumen')).flush({
       total: 6, pendientes: 3, enProceso: 2, resueltos: 1, altaPrioridadPendientes: 2,
       recientes: [
-        { id: 6, codigo: '0006', tipoDano: 'FUGA_AGUA', bloque: 'BLOQUE_A', espacioEspecifico: 'Salón 204',
+        { id: 6, codigo: '0006', tipoDano: 'FUGA_AGUA', bloque: 'BLOQUE_1', espacioEspecifico: 'Salón 204',
           prioridadEstimada: 'ALTA', estado: 'PENDIENTE', reportadoPor: 'Estudiante Uno',
           reportadoPorCorreo: 'estudiante1@fet.edu.co', fechaCreacion: '2026-10-05T09:30:00' },
       ],

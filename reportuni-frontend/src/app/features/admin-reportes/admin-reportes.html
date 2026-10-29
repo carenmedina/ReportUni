@@ -89,7 +89,7 @@
         </tr>
         @for (reporte of reportes(); track reporte.id) {
           <tr>
-            <td class="ru-td ru-td--muted">#{{ reporte.codigo }}</td>
+            <td class="ru-td ru-td--muted">{{ reporte.codigo }}</td>
             <td class="ru-td">{{ etiquetaTipoDano(reporte.tipoDano) }}</td>
             <td class="ru-td">{{ ubicacion(reporte) }}</td>
             <td class="ru-td">

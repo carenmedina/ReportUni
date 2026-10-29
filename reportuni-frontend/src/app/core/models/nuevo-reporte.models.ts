@@ -4,12 +4,11 @@ export type TipoDano =
   | 'FUGA_AGUA'
   | 'DANO_ELECTRICO'
   | 'AUDIOVISUAL'
-  | 'TECHO_ESTRUCTURA'
-  | 'MOBILIARIO'
+  | 'ESTRUCTURA'
   | 'ASEO'
   | 'OTRO';
 
-export type Bloque = 'BLOQUE_A' | 'BLOQUE_B' | 'BLOQUE_C' | 'BIBLIOTECA' | 'ZONAS_COMUNES';
+export type Bloque = 'BLOQUE_1' | 'BLOQUE_2' | 'BIBLIOTECA' | 'ZONAS_COMUNES';
 
 export interface OpcionCatalogo<T extends string> {
   valor: T;
@@ -18,26 +17,24 @@ export interface OpcionCatalogo<T extends string> {
 
 export const TIPOS_DANO: OpcionCatalogo<TipoDano>[] = [
   { valor: 'FUGA_AGUA', etiqueta: 'Fuga de agua' },
-  { valor: 'DANO_ELECTRICO', etiqueta: 'Daño eléctrico / iluminación' },
-  { valor: 'AUDIOVISUAL', etiqueta: 'Videobeam / equipo audiovisual' },
-  { valor: 'TECHO_ESTRUCTURA', etiqueta: 'Techo o estructura' },
-  { valor: 'MOBILIARIO', etiqueta: 'Mobiliario dañado' },
-  { valor: 'ASEO', etiqueta: 'Aseo / limpieza' },
-  { valor: 'OTRO', etiqueta: 'Otro' },
+  { valor: 'DANO_ELECTRICO', etiqueta: 'Daño eléctrico' },
+  { valor: 'AUDIOVISUAL', etiqueta: 'Equipo audiovisual' },
+  { valor: 'ESTRUCTURA', etiqueta: 'Estructura' },
+  { valor: 'ASEO', etiqueta: 'Aseo - Limpieza' },
+  { valor: 'OTRO', etiqueta: 'Otros' },
 ];
 
 export const PRIORIDADES_ESTIMADAS: OpcionCatalogo<PrioridadReporte>[] = [
-  { valor: 'MEDIA', etiqueta: 'Media' },
   { valor: 'BAJA', etiqueta: 'Baja' },
-  { valor: 'ALTA', etiqueta: 'Alta — afecta una actividad en curso' },
+  { valor: 'MEDIA', etiqueta: 'Media' },
+  { valor: 'ALTA', etiqueta: 'Alta' },
 ];
 
 export const BLOQUES: OpcionCatalogo<Bloque>[] = [
-  { valor: 'BLOQUE_A', etiqueta: 'Bloque A — Aulas' },
-  { valor: 'BLOQUE_B', etiqueta: 'Bloque B — Laboratorios' },
-  { valor: 'BLOQUE_C', etiqueta: 'Bloque C — Auditorio' },
+  { valor: 'BLOQUE_1', etiqueta: 'Bloque 1' },
+  { valor: 'BLOQUE_2', etiqueta: 'Bloque 2' },
   { valor: 'BIBLIOTECA', etiqueta: 'Biblioteca' },
-  { valor: 'ZONAS_COMUNES', etiqueta: 'Zonas comunes / exteriores' },
+  { valor: 'ZONAS_COMUNES', etiqueta: 'Zonas comunes - Exteriores' },
 ];
 
 export const LIMITE_FOTOS = 5;

@@ -34,7 +34,6 @@ export class Layout implements OnInit {
     this.menuUsuarioAbierto.update((valor) => !valor);
   }
 
-  // El menu del usuario se cierra al hacer clic fuera de el o al pulsar Escape
   @HostListener('document:click', ['$event'])
   cerrarSiClicFuera(evento: Event): void {
     const destino = evento.target as HTMLElement | null;

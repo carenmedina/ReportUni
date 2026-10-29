@@ -2,7 +2,7 @@
   <nav class="ru-detalle__migas">
     <a [routerLink]="volverA">{{ volverTexto }}</a>
     <span>›</span>
-    <span>{{ reporte() ? '#' + reporte()!.codigo : 'Detalle' }}</span>
+    <span>{{ reporte() ? '' + reporte()!.codigo : 'Detalle' }}</span>
   </nav>
 
   @if (cargando()) {
@@ -15,7 +15,7 @@
   } @else if (reporte(); as r) {
     <div class="ru-detalle__encabezado">
       <div>
-        <h1>{{ etiquetaTipoDano(r.tipoDano) }} — Reporte #{{ r.codigo }}</h1>
+        <h1>{{ etiquetaTipoDano(r.tipoDano) }} — Reporte {{ r.codigo }}</h1>
         <p>{{ ubicacionTexto(r.bloque, r.espacioEspecifico) }} · Creado el {{ fecha(r) }}</p>
       </div>
       <span

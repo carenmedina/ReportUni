@@ -1,12 +1,12 @@
 <div class="nr">
   <nav class="nr__crumb">Reportes › <strong>Nuevo reporte</strong></nav>
-  <h1 class="nr__title">Nuevo reporte de daño</h1>
+  <h1 class="nr__title">Llena el formulario para reportar un daño</h1>
 
   @if (creado(); as r) {
     <section class="nr__ok" role="status">
       <h2>¡Reporte enviado!</h2>
       <p>
-        Tu reporte <strong>#{{ r.codigo }}</strong> quedó registrado con estado
+        Tu reporte <strong>{{ r.codigo }}</strong> quedó registrado con estado
         <strong>Pendiente</strong> y {{ r.totalFotos }} foto(s) adjunta(s).
       </p>
       <button type="button" class="ru-btn-primary" (click)="irAMisReportes()">Ir a Mis reportes</button>
@@ -20,7 +20,7 @@
 
         <div class="nr__row">
           <label class="nr__field">
-            <span>Tipo de daño *</span>
+            <span>Tipo</span>
             <select class="ru-input" formControlName="tipoDano">
               <option value="" disabled>Selecciona una opción</option>
               @for (t of tiposDano; track t.valor) {
@@ -47,7 +47,7 @@
 
         <div class="nr__row">
           <label class="nr__field">
-            <span>Bloque / Edificio *</span>
+            <span>Bloque</span>
             <select class="ru-input" formControlName="bloque">
               <option value="" disabled>Selecciona una opción</option>
               @for (b of bloques; track b.valor) {
@@ -55,14 +55,14 @@
               }
             </select>
             @if (invalido('bloque')) {
-              <small class="nr__err">Selecciona el bloque o edificio</small>
+              <small class="nr__err">Selecciona el bloque</small>
             } @else if (errorServidor('bloque')) {
               <small class="nr__err">{{ errorServidor('bloque') }}</small>
             }
           </label>
 
           <label class="nr__field">
-            <span>Espacio específico *</span>
+            <span>Lugar específico</span>
             <input
               class="ru-input"
               type="text"
@@ -99,7 +99,7 @@
         </div>
 
         <label class="nr__field">
-          <span>Descripción del daño *</span>
+          <span>Descripción del daño</span>
           <textarea
             class="ru-input"
             rows="4"
@@ -115,9 +115,8 @@
         </label>
 
         <div class="nr__field">
-          <span>Fotografías del daño *</span>
+          <span>Fotografías del daño</span>
           @if (esMovil) {
-            <!-- Celular o tableta: galeria, archivos y camara -->
             <div class="nr__opciones">
               <button type="button" class="ru-btn-secondary" [disabled]="!puedeAgregarFotos()" (click)="galeria.click()">
                 Seleccionar de la galería
@@ -134,7 +133,7 @@
             <input #camara type="file" accept="image/*" capture="environment" hidden (change)="alSeleccionarArchivos($event)" />
             <small class="nr__hint">JPG o PNG · máx. 10 MB por foto · hasta {{ limiteFotos }} fotos</small>
           } @else {
-            <!-- Escritorio: seleccionar archivos o arrastrarlos -->
+
             <label
               class="nr__drop"
               [class.nr__drop--active]="arrastrando()"

@@ -38,7 +38,6 @@ export class AdminReporteService {
     return this.http.get<AdminReporteItem[]>(this.base, { params });
   }
 
-  // Fase 2: el cambio de estado lleva una explicacion y fotos de evidencia (obligatorias al resolver)
   cambiarEstado(id: number, estado: EstadoReporte, nota: string, fotos: File[]): Observable<AdminReporteItem> {
     return this.http.post<AdminReporteItem>(`${this.base}/${id}/estado`, this.formulario(nota, fotos, estado));
   }
@@ -47,7 +46,6 @@ export class AdminReporteService {
     return this.http.put<AdminReporteItem>(`${this.base}/${id}/asignacion`, { area, nota: nota || null });
   }
 
-  // Novedad del proceso (por ejemplo, un repuesto que tarda mas) sin cambiar el estado
   agregarActualizacion(id: number, nota: string, fotos: File[]): Observable<AdminReporteItem> {
     return this.http.post<AdminReporteItem>(`${this.base}/${id}/actualizaciones`, this.formulario(nota, fotos));
   }

@@ -30,7 +30,7 @@ class AdminReporteControllerTest {
     private MockMvc mockMvc;
 
     private final AdminReporteItem item = new AdminReporteItem(
-            12L, "0012", TipoDano.FUGA_AGUA, Bloque.BLOQUE_A, "Salon 204", PrioridadReporte.ALTA,
+            12L, "0012", TipoDano.FUGA_AGUA, Bloque.BLOQUE_1, "Salon 204", PrioridadReporte.ALTA,
             EstadoReporte.PENDIENTE, "Estudiante Uno", "estudiante1@fet.edu.co",
             LocalDateTime.of(2026, 10, 5, 9, 30));
 

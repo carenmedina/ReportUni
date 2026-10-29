@@ -13,11 +13,6 @@ type Seccion = 'prioridad' | 'asignacion' | 'estado' | 'actualizacion';
 const NOTA_MIN = 10;
 const NOTA_MAX = 1000;
 
-/**
- * Fase 2: panel del administrador para gestionar un reporte con evidencia. Cambiar el estado exige
- * explicar que se hace o se hizo (y fotos del arreglo al resolver); tambien permite asignar el
- * reporte a un equipo y publicar novedades del proceso sin cambiar el estado.
- */
 @Component({
   selector: 'app-gestion-reporte',
   standalone: true,
@@ -29,7 +24,6 @@ export class GestionReporte {
   private readonly servicio = inject(AdminReporteService);
 
   readonly reporte = input.required<ReporteDetalle>();
-  /** Se emite cuando el servidor guardo un cambio, para que el detalle se vuelva a cargar. */
   readonly cambiado = output<void>();
 
   readonly opcionesPrioridad = OPCIONES_PRIORIDAD;
@@ -38,11 +32,9 @@ export class GestionReporte {
   readonly guardando = signal<Seccion | null>(null);
   readonly aviso = signal<{ seccion: Seccion; tipo: 'ok' | 'error'; texto: string } | null>(null);
 
-  // asignacion
   readonly areaElegida = signal('');
   readonly areaMostrada = computed(() => this.areaElegida() || this.reporte().asignadoA || '');
 
-  // cambio de estado
   readonly estadoElegido = signal<EstadoReporte | ''>('');
   readonly notaEstado = signal('');
   readonly fotosEstado = signal<File[]>([]);
@@ -59,7 +51,6 @@ export class GestionReporte {
     }
   });
 
-  // actualizaciones del proceso
   readonly notaActualizacion = signal('');
   readonly fotosActualizacion = signal<File[]>([]);
 

@@ -5,7 +5,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { Notificacion, TotalNoLeidas } from '../../core/models/seguimiento.model';
 import { formatearFecha } from '../../core/models/reporte-consulta.model';
 
-/** Semana 8: campana del encabezado con las notificaciones del usuario. */
 @Component({
   selector: 'app-notificaciones-campana',
   standalone: true,
@@ -18,7 +17,6 @@ export class NotificacionesCampana implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly host = inject(ElementRef<HTMLElement>);
 
-  /** Cada cuanto se consulta si hay avisos nuevos (ms). */
   static readonly INTERVALO_MS = 30000;
 
   readonly abierto = signal(false);
@@ -66,7 +64,6 @@ export class NotificacionesCampana implements OnInit, OnDestroy {
         error: () => undefined,
       });
     }
-    // El administrador gestiona el reporte desde su propia pantalla
     const esAdmin = this.auth.usuarioActual()?.rol === 'ADMINISTRADOR';
     this.router.navigate([esAdmin ? '/admin/reportes' : '/mis-reportes', n.reporteId]);
   }

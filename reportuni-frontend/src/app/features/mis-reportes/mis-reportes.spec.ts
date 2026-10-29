@@ -8,9 +8,9 @@ describe('MisReportes', () => {
   let http: HttpTestingController;
 
   const datos = [
-    { id: 2, codigo: '0002', tipoDano: 'AUDIOVISUAL', bloque: 'BLOQUE_C', espacioEspecifico: 'Auditorio',
+    { id: 2, codigo: '0002', tipoDano: 'AUDIOVISUAL', bloque: 'ZONAS_COMUNES', espacioEspecifico: 'Auditorio',
       prioridadEstimada: 'MEDIA', estado: 'EN_PROCESO', fechaCreacion: '2026-10-05T09:30:00', totalFotos: 1 },
-    { id: 1, codigo: '0001', tipoDano: 'FUGA_AGUA', bloque: 'BLOQUE_A', espacioEspecifico: 'Salón 204',
+    { id: 1, codigo: '0001', tipoDano: 'FUGA_AGUA', bloque: 'BLOQUE_1', espacioEspecifico: 'Salón 204',
       prioridadEstimada: 'ALTA', estado: 'PENDIENTE', fechaCreacion: '2026-10-04T08:00:00', totalFotos: 2 },
   ];
 

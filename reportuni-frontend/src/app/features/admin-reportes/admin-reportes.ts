@@ -40,7 +40,6 @@ export class AdminReportes implements OnDestroy {
   readonly opcionesBloque = OPCIONES_BLOQUE;
   readonly opcionesPrioridad = OPCIONES_PRIORIDAD;
 
-  // El estado se cambia en el detalle (con explicacion y evidencia); aqui solo la prioridad
   readonly guardando = signal<number | null>(null);
   readonly aviso = signal<{ tipo: 'ok' | 'error'; texto: string } | null>(null);
 
@@ -72,7 +71,6 @@ export class AdminReportes implements OnDestroy {
     });
   }
 
-  // El texto se envia al servidor con una pequena espera para no pedir en cada tecla
   cambiarBusqueda(valor: string): void {
     this.filtros.update((f) => ({ ...f, q: valor }));
     clearTimeout(this.temporizador);

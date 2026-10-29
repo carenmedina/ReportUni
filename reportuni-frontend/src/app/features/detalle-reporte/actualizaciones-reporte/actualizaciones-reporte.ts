@@ -6,7 +6,6 @@ import { Comentario, MAX_CARACTERES_COMENTARIO } from '../../../core/models/come
 import { SeguimientoService } from '../../../core/services/seguimiento.service';
 import { ComentarioService } from '../../../core/services/comentario.service';
 
-/** Una linea de la conversacion: un cambio del proceso (con evidencia) o un comentario. */
 interface Entrada {
   clave: string;
   tipo: 'cambio' | 'comentario';
@@ -20,11 +19,6 @@ interface Entrada {
   fotos: FotoHistorial[];
 }
 
-/**
- * Fases 2 y 3: "Comentarios y actualizaciones" de un reporte. Mezcla en orden cronologico los
- * cambios del proceso (estado, asignacion, novedades con fotos) y los comentarios del estudiante
- * y de los administradores, y permite escribir un comentario nuevo.
- */
 @Component({
   selector: 'app-actualizaciones-reporte',
   standalone: true,
@@ -32,7 +26,6 @@ interface Entrada {
   styleUrl: './actualizaciones-reporte.scss',
 })
 export class ActualizacionesReporte implements OnDestroy {
-  /** Cada cuanto se buscan comentarios nuevos mientras se mira el reporte (ms). */
   static readonly INTERVALO_MS = 30000;
 
   private readonly seguimiento = inject(SeguimientoService);
@@ -52,7 +45,6 @@ export class ActualizacionesReporte implements OnDestroy {
   readonly errorEnvio = signal<string | null>(null);
   readonly limite = MAX_CARACTERES_COMENTARIO;
 
-  // "<id del historial>-<id de la foto>" -> URL temporal (blob:)
   readonly fotosUrl = signal<Record<string, string>>({});
   readonly fotosConError = signal<Record<string, boolean>>({});
 
@@ -89,7 +81,6 @@ export class ActualizacionesReporte implements OnDestroy {
   private temporizador: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
-    // Fotos de evidencia de los cambios del proceso
     effect(() => {
       const reporteId = this.reporteId();
       for (const item of this.historial()) {
@@ -111,7 +102,6 @@ export class ActualizacionesReporte implements OnDestroy {
       }
     });
 
-    // Comentarios: se cargan al abrir el reporte y se refrescan cada cierto tiempo
     effect(() => {
       const reporteId = this.reporteId();
       untracked(() => this.cargarComentarios(reporteId, false));

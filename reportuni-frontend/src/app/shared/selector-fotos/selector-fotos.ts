@@ -1,11 +1,6 @@
 import { Component, OnDestroy, computed, effect, input, model, signal } from '@angular/core';
 import { LIMITE_FOTOS, MAX_BYTES_FOTO, TIPOS_FOTO_PERMITIDOS } from '../../core/models/nuevo-reporte.models';
 
-/**
- * Selector de fotografias reutilizable (evidencia del administrador). Mismas reglas que las fotos
- * de un reporte: JPG o PNG, maximo 10 MB y hasta 5 fotos. En celular o tableta ofrece galeria,
- * archivos y camara; en escritorio, seleccionar archivos o arrastrarlos.
- */
 @Component({
   selector: 'app-selector-fotos',
   standalone: true,
@@ -13,7 +8,6 @@ import { LIMITE_FOTOS, MAX_BYTES_FOTO, TIPOS_FOTO_PERMITIDOS } from '../../core/
   styleUrl: './selector-fotos.scss',
 })
 export class SelectorFotos implements OnDestroy {
-  /** Fotos elegidas (enlace en ambos sentidos: el padre puede vaciarlas con set([])). */
   readonly fotos = model<File[]>([]);
   readonly deshabilitado = input(false);
   readonly limite = LIMITE_FOTOS;
@@ -30,7 +24,6 @@ export class SelectorFotos implements OnDestroy {
   readonly puedeAgregar = computed(() => !this.deshabilitado() && this.fotos().length < LIMITE_FOTOS);
 
   constructor() {
-    // Libera las vistas previas de las fotos que ya no estan (quitadas o vaciadas por el padre)
     effect(() => {
       const actuales = new Set(this.fotos());
       for (const [archivo, url] of this.urls) {

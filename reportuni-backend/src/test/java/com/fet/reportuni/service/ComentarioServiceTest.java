@@ -59,7 +59,7 @@ class ComentarioServiceTest {
                 .correoInstitucional("admin2@fet.edu.co").passwordHash("x").rol(Rol.ADMINISTRADOR).build();
 
         reporte = Reporte.builder().id(7L).usuario(estudiante).tipoDano(TipoDano.FUGA_AGUA)
-                .bloque(Bloque.BLOQUE_A).espacioEspecifico("Salon 204")
+                .bloque(Bloque.BLOQUE_1).espacioEspecifico("Salon 204")
                 .prioridadEstimada(PrioridadReporte.MEDIA).estado(EstadoReporte.PENDIENTE)
                 .descripcion("Gotera").fechaCreacion(LocalDateTime.of(2026, 10, 20, 9, 0)).build();
     }

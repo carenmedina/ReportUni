@@ -37,7 +37,6 @@ export class NuevoReporte implements OnDestroy {
   readonly bloques = BLOQUES;
   readonly limiteFotos = LIMITE_FOTOS;
 
-  // En pantallas tactiles (celular o tableta) se ofrecen galeria, archivos y camara
   readonly esMovil: boolean =
     typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
 

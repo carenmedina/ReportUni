@@ -36,10 +36,10 @@ export const OPCIONES_PRIORIDAD: { valor: PrioridadReporte; etiqueta: string }[]
 
 export interface FiltrosAdmin {
   q: string;
-  estado: string; // 'TODOS' o un EstadoReporte
-  prioridad: string; // 'TODAS' o una PrioridadReporte
-  tipoDano: string; // 'TODOS' o un TipoDano
-  bloque: string; // 'TODOS' o un Bloque
+  estado: string;
+  prioridad: string;
+  tipoDano: string;
+  bloque: string;
 }
 
 export const FILTROS_VACIOS: FiltrosAdmin = {
@@ -54,16 +54,14 @@ export const OPCIONES_TIPO_DANO: { valor: string; etiqueta: string }[] = [
   { valor: 'FUGA_AGUA', etiqueta: 'Fuga de agua' },
   { valor: 'DANO_ELECTRICO', etiqueta: 'Daño eléctrico' },
   { valor: 'AUDIOVISUAL', etiqueta: 'Equipo audiovisual' },
-  { valor: 'TECHO_ESTRUCTURA', etiqueta: 'Techo o estructura' },
-  { valor: 'MOBILIARIO', etiqueta: 'Mobiliario' },
-  { valor: 'ASEO', etiqueta: 'Aseo' },
-  { valor: 'OTRO', etiqueta: 'Otro' },
+  { valor: 'ESTRUCTURA', etiqueta: 'Estructura' },
+  { valor: 'ASEO', etiqueta: 'Aseo - Limpieza' },
+  { valor: 'OTRO', etiqueta: 'Otros' },
 ];
 
 export const OPCIONES_BLOQUE: { valor: string; etiqueta: string }[] = [
-  { valor: 'BLOQUE_A', etiqueta: 'Bloque A' },
-  { valor: 'BLOQUE_B', etiqueta: 'Bloque B' },
-  { valor: 'BLOQUE_C', etiqueta: 'Bloque C' },
+  { valor: 'BLOQUE_1', etiqueta: 'Bloque 1' },
+  { valor: 'BLOQUE_2', etiqueta: 'Bloque 2' },
   { valor: 'BIBLIOTECA', etiqueta: 'Biblioteca' },
-  { valor: 'ZONAS_COMUNES', etiqueta: 'Zonas comunes' },
+  { valor: 'ZONAS_COMUNES', etiqueta: 'Zonas comunes - Exteriores' },
 ];

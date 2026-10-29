@@ -50,7 +50,7 @@ class ReporteServiceConsultaTest {
                 .usuario(estudiante)
                 .tipoDano(TipoDano.FUGA_AGUA)
                 .prioridadEstimada(PrioridadReporte.ALTA)
-                .bloque(Bloque.BLOQUE_A)
+                .bloque(Bloque.BLOQUE_1)
                 .espacioEspecifico("Salon 204")
                 .descripcion("Fuga junto a la ventana")
                 .notificarPorCorreo(true)

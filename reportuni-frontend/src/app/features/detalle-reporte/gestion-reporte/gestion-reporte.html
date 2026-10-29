@@ -1,7 +1,6 @@
 <section class="ru-tarjeta ru-gestion">
   <h2>Gestionar reporte</h2>
 
-  <!-- Prioridad -->
   <label class="ru-gestion__campo" for="gestion-prioridad">Prioridad</label>
   <select
     id="gestion-prioridad"
@@ -17,7 +16,6 @@
     <p class="ru-gestion__aviso" [class.ru-gestion__aviso--error]="a.tipo === 'error'" role="status">{{ a.texto }}</p>
   }
 
-  <!-- Asignacion -->
   <label class="ru-gestion__campo" for="gestion-area">Asignado a</label>
   <div class="ru-gestion__fila">
     <select
@@ -46,7 +44,6 @@
 
   <hr class="ru-gestion__separador" />
 
-  <!-- Cambio de estado con explicacion y evidencia -->
   <h3>Cambiar estado</h3>
   <label class="ru-gestion__campo" for="gestion-estado">Nuevo estado</label>
   <select
@@ -89,10 +86,9 @@
 
   <hr class="ru-gestion__separador" />
 
-  <!-- Actualizacion del proceso sin cambiar el estado -->
   <h3>Publicar actualización</h3>
   <p class="ru-detalle__nota">Para avisar una novedad sin cambiar el estado (por ejemplo, un repuesto que tarda más).</p>
-  <label class="ru-gestion__campo" for="gestion-nota-actualizacion">Novedad *</label>
+  <label class="ru-gestion__campo" for="gestion-nota-actualizacion">Novedad</label>
   <textarea
     id="gestion-nota-actualizacion"
     class="ru-gestion__texto"

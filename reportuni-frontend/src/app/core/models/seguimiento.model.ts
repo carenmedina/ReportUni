@@ -31,7 +31,6 @@ export interface TotalNoLeidas {
   total: number;
 }
 
-/** Equipos a los que el administrador puede asignar un reporte (igual que AreaAsignada en el backend). */
 export const OPCIONES_AREA: { valor: string; etiqueta: string }[] = [
   { valor: 'SOPORTE_TECNICO', etiqueta: 'Soporte Técnico · Infraestructura' },
   { valor: 'MANTENIMIENTO', etiqueta: 'Mantenimiento general' },
@@ -49,7 +48,6 @@ const ETIQUETAS: Record<string, string> = {
   BAJA: 'Baja',
 };
 
-/** Convierte PENDIENTE, EN_PROCESO, ALTA, SOPORTE_TECNICO... en texto legible. */
 export function etiquetaValor(valor: string): string {
   return ETIQUETAS[valor] ?? OPCIONES_AREA.find((a) => a.valor === valor)?.etiqueta ?? valor;
 }
