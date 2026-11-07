@@ -23,7 +23,14 @@ describe('Layout', () => {
     http = TestBed.inject(HttpTestingController);
     const fixture = TestBed.createComponent(Layout);
     fixture.detectChanges();
-    http.match(() => true).forEach((r) => r.flush(r.request.url.endsWith('/no-leidas') ? { total: 0 } : { items: [] }));
+    http.match(() => true).forEach((r) => {
+      if (r.request.url.endsWith('/perfil')) {
+        r.flush({ nombreCompleto: 'Estudiante Uno', correoInstitucional: 'e1@fet.edu.co', rol: 'ESTUDIANTE', tieneFoto: false,
+          resumen: { total: 0, pendientes: 0, enProceso: 0, resueltos: 0, gestionados: null } });
+      } else {
+        r.flush(r.request.url.endsWith('/no-leidas') ? { total: 0 } : { items: [] });
+      }
+    });
     fixture.detectChanges();
     return fixture;
   }
@@ -54,6 +61,21 @@ describe('Layout', () => {
 
     opcion.click();
     expect(logout).toHaveBeenCalledTimes(1);
+    fixture.destroy();
+  });
+
+  it('el boton de usuario muestra las iniciales y el menu trae Mi perfil antes de Cerrar sesion', () => {
+    const fixture = crear();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('.ru-avatar')?.textContent?.trim()).toBe('EU');
+
+    (el.querySelector('.ru-header__user') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    const enlace = el.querySelector('.ru-usermenu__link') as HTMLAnchorElement;
+    expect(enlace.textContent).toContain('Mi perfil');
+    expect(enlace.getAttribute('href')).toBe('/perfil');
     fixture.destroy();
   });
 

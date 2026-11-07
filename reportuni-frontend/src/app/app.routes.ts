@@ -45,6 +45,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin-reportes/admin-reportes').then((m) => m.AdminReportes),
       },
       {
+        path: 'perfil',
+        loadComponent: () => import('./features/perfil/perfil').then((m) => m.PerfilPagina),
+      },
+      {
         path: 'admin/estudiantes',
         canActivate: [roleGuard(['ADMINISTRADOR'])],
         loadComponent: () => import('./features/admin-estudiantes/admin-estudiantes').then((m) => m.AdminEstudiantes),

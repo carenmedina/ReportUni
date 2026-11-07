@@ -21,6 +21,13 @@
           [attr.aria-expanded]="menuUsuarioAbierto()"
           aria-haspopup="menu"
         >
+          <span class="ru-avatar" aria-hidden="true">
+            @if (fotoUrl(); as url) {
+              <img [src]="url" alt="" />
+            } @else {
+              {{ iniciales() }}
+            }
+          </span>
           <span class="ru-header__user-nombre">{{ usuario()?.nombreCompleto?.toUpperCase() ?? '' }}</span>
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
@@ -31,6 +38,7 @@
               <strong>{{ usuario()?.nombreCompleto }}</strong>
               <span>{{ etiquetaRol() }}</span>
             </div>
+            <a class="ru-usermenu__link" role="menuitem" routerLink="/perfil" (click)="cerrarMenuUsuario()">Mi perfil</a>
             <button type="button" class="ru-usermenu__item" role="menuitem" (click)="cerrarSesion()">
               Cerrar sesión
             </button>

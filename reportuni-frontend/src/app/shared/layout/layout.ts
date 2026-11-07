@@ -1,8 +1,9 @@
-import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, HostListener, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { NavegacionService } from '../../core/services/navegacion.service';
+import { PerfilService } from '../../core/services/perfil.service';
 import { MenuItem } from '../../core/models/navegacion.model';
 import { NotificacionesCampana } from '../notificaciones-campana/notificaciones-campana';
 import { ComentariosCampana } from '../comentarios-campana/comentarios-campana';
@@ -14,20 +15,35 @@ import { ComentariosCampana } from '../comentarios-campana/comentarios-campana';
   templateUrl: './layout.html',
   styleUrl: './layout.scss',
 })
-export class Layout implements OnInit {
+export class Layout implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly navegacionService = inject(NavegacionService);
+  private readonly perfilService = inject(PerfilService);
 
   readonly menuUsuarioAbierto = signal(false);
   readonly itemsMenu = signal<MenuItem[]>([]);
 
   readonly usuario = this.authService.usuarioActual;
+  readonly fotoUrl = this.perfilService.fotoUrl;
+  readonly iniciales = computed(() => {
+    const partes = (this.usuario()?.nombreCompleto ?? '').trim().split(/\s+/).filter(Boolean);
+    return partes.slice(0, 2).map((p) => p[0].toUpperCase()).join('');
+  });
 
   ngOnInit(): void {
     this.navegacionService.obtenerMenu().subscribe({
       next: (respuesta) => this.itemsMenu.set(respuesta.items),
       error: () => this.itemsMenu.set([]),
     });
+    this.perfilService.cargar();
+  }
+
+  ngOnDestroy(): void {
+    this.perfilService.limpiar();
+  }
+
+  cerrarMenuUsuario(): void {
+    this.menuUsuarioAbierto.set(false);
   }
 
   alternarMenuUsuario(): void {

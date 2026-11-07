@@ -1,0 +1,141 @@
+<div class="ru-perfil">
+  <div class="ru-perfil__heading">
+    <h1>Mi perfil</h1>
+    <p>Consulta tus datos, cambia tu foto y, si quieres, actualiza tu contraseña.</p>
+  </div>
+
+  @if (cargando()) {
+    <p class="ru-estado">Cargando tu perfil...</p>
+  } @else if (errorCarga()) {
+    <div class="ru-estado ru-estado--error">{{ errorCarga() }}</div>
+  } @else if (perfil(); as p) {
+    <section class="ru-panel ru-perfil__cabecera">
+      <div class="ru-perfil__avatar" aria-hidden="true">
+        @if (fotoUrl(); as url) {
+          <img [src]="url" alt="" />
+        } @else {
+          <span>{{ iniciales() }}</span>
+        }
+      </div>
+
+      <div class="ru-perfil__datos">
+        <h2>{{ p.nombreCompleto }}</h2>
+        <dl>
+          <div>
+            <dt>Correo institucional</dt>
+            <dd>{{ p.correoInstitucional }}</dd>
+          </div>
+          <div>
+            <dt>Rol</dt>
+            <dd><span class="ru-rol">{{ etiquetaRol() }}</span></dd>
+          </div>
+        </dl>
+
+        <div class="ru-perfil__foto-acciones">
+          <label class="ru-btn-secondary ru-perfil__elegir" for="foto-perfil" [class.ru-perfil__elegir--off]="subiendoFoto()">
+            {{ subiendoFoto() ? 'Guardando...' : p.tieneFoto ? 'Cambiar foto' : 'Subir foto' }}
+          </label>
+          <input
+            id="foto-perfil"
+            class="ru-perfil__input"
+            type="file"
+            accept="image/jpeg,image/png"
+            [disabled]="subiendoFoto()"
+            (change)="elegirFoto($event)"
+          />
+          @if (p.tieneFoto) {
+            <button type="button" class="ru-btn-secondary" [disabled]="subiendoFoto()" (click)="quitarFoto()">
+              Quitar foto
+            </button>
+          }
+          <span class="ru-perfil__nota">JPG o PNG, máximo 5 MB.</span>
+        </div>
+
+        @if (avisoFoto(); as aviso) {
+          <div class="ru-aviso" [class.ru-aviso--error]="aviso.tipo === 'error'" role="status">{{ aviso.texto }}</div>
+        }
+      </div>
+    </section>
+
+    <section class="ru-panel">
+      <h2>{{ esAdmin() ? 'Tu actividad' : 'Tus reportes' }}</h2>
+      @if (esAdmin()) {
+        <div class="ru-perfil__cifras ru-perfil__cifras--una">
+          <div class="ru-perfil__cifra">
+            <strong>{{ p.resumen.gestionados ?? 0 }}</strong>
+            <span>Reportes gestionados</span>
+          </div>
+        </div>
+        <p class="ru-perfil__nota">
+          Cuenta los reportes en los que cambiaste el estado o la prioridad, asignaste un equipo o publicaste una actualización.
+        </p>
+      } @else {
+        <div class="ru-perfil__cifras">
+          <div class="ru-perfil__cifra">
+            <strong>{{ p.resumen.total ?? 0 }}</strong>
+            <span>Total</span>
+          </div>
+          <div class="ru-perfil__cifra ru-perfil__cifra--pendiente">
+            <strong>{{ p.resumen.pendientes ?? 0 }}</strong>
+            <span>Pendientes</span>
+          </div>
+          <div class="ru-perfil__cifra ru-perfil__cifra--proceso">
+            <strong>{{ p.resumen.enProceso ?? 0 }}</strong>
+            <span>En proceso</span>
+          </div>
+          <div class="ru-perfil__cifra ru-perfil__cifra--resuelto">
+            <strong>{{ p.resumen.resueltos ?? 0 }}</strong>
+            <span>Resueltos</span>
+          </div>
+        </div>
+      }
+    </section>
+
+    <section class="ru-panel">
+      <h2>Cambiar contraseña</h2>
+      <p class="ru-perfil__nota ru-perfil__nota--bloque">
+        Es opcional. Si tu contraseña inicial es tu número de documento, te recomendamos cambiarla.
+      </p>
+
+      <form class="ru-perfil__form" [formGroup]="formPassword" (ngSubmit)="cambiarPassword()" novalidate>
+        <label class="ru-campo">
+          <span>Contraseña actual</span>
+          <input type="password" autocomplete="current-password" formControlName="actual" />
+          @if (invalido('actual')) {
+            <small class="ru-campo__error">Escribe tu contraseña actual.</small>
+          }
+        </label>
+
+        <label class="ru-campo">
+          <span>Nueva contraseña</span>
+          <input type="password" autocomplete="new-password" formControlName="nueva" />
+          @if (invalido('nueva')) {
+            <small class="ru-campo__error">La nueva contraseña debe tener entre {{ minPassword }} y 64 caracteres.</small>
+          } @else {
+            <small class="ru-campo__ayuda">Mínimo {{ minPassword }} caracteres.</small>
+          }
+        </label>
+
+        <label class="ru-campo">
+          <span>Confirmar nueva contraseña</span>
+          <input type="password" autocomplete="new-password" formControlName="confirmacion" />
+          @if (invalido('confirmacion')) {
+            <small class="ru-campo__error">Confirma la nueva contraseña.</small>
+          } @else if (noCoincide()) {
+            <small class="ru-campo__error">La confirmación no coincide con la nueva contraseña.</small>
+          }
+        </label>
+
+        @if (avisoPassword(); as aviso) {
+          <div class="ru-aviso" [class.ru-aviso--error]="aviso.tipo === 'error'" role="status">{{ aviso.texto }}</div>
+        }
+
+        <div>
+          <button type="submit" class="ru-btn-primary" [disabled]="guardandoPassword()">
+            {{ guardandoPassword() ? 'Guardando...' : 'Cambiar contraseña' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+</div>
