@@ -1,0 +1,123 @@
+<section class="ru-panel ru-est">
+  <div class="ru-est__cabecera">
+    <div>
+      <h2>Estadísticas de reportes</h2>
+      <p>Qué se reporta más y dónde. Filtra por la fecha en que se creó el reporte.</p>
+    </div>
+
+    <div class="ru-est__filtros">
+      <div class="ru-est__chips" role="group" aria-label="Periodo">
+        <button type="button" class="ru-chip" [class.ru-chip--activo]="preset() === 'TODO'" (click)="elegirPreset('TODO')">Todo</button>
+        <button type="button" class="ru-chip" [class.ru-chip--activo]="preset() === '30'" (click)="elegirPreset('30')">Últimos 30 días</button>
+        <button type="button" class="ru-chip" [class.ru-chip--activo]="preset() === '90'" (click)="elegirPreset('90')">Últimos 90 días</button>
+      </div>
+      <label class="ru-est__fecha">
+        <span>Desde</span>
+        <input type="date" [value]="rango().desde" [max]="rango().hasta || hoy" (change)="cambiarFecha('desde', $any($event.target).value)" />
+      </label>
+      <label class="ru-est__fecha">
+        <span>Hasta</span>
+        <input type="date" [value]="rango().hasta" [min]="rango().desde" [max]="hoy" (change)="cambiarFecha('hasta', $any($event.target).value)" />
+      </label>
+    </div>
+  </div>
+
+  @if (error(); as mensaje) {
+    <div class="ru-est__estado ru-est__estado--error" role="alert">
+      <p>{{ mensaje }}</p>
+      <button type="button" class="ru-btn-secondary" (click)="cargar()">Reintentar</button>
+    </div>
+  } @else if (cargando() && !datos()) {
+    <p class="ru-est__estado">Cargando estadísticas...</p>
+  } @else if (datos(); as d) {
+    <div class="ru-est__kpis" [class.ru-est__cargando]="cargando()">
+      <div class="ru-kpi">
+        <strong>{{ d.totalReportes }}</strong>
+        <span>Reportes en el periodo</span>
+      </div>
+      <div class="ru-kpi">
+        <strong>{{ promedioTexto() ?? '—' }}</strong>
+        <span>Tiempo promedio de resolución</span>
+        <small>
+          @if (promedioTexto()) {
+            Desde que se crea hasta que se marca resuelto. Basado en {{ d.reportesResueltosMedidos }}
+            {{ d.reportesResueltosMedidos === 1 ? 'reporte resuelto' : 'reportes resueltos' }}.
+          } @else {
+            Aún no hay reportes resueltos en este periodo.
+          }
+        </small>
+      </div>
+    </div>
+
+    @if (d.totalReportes === 0) {
+      <p class="ru-est__estado">No hay reportes en este periodo.</p>
+    } @else {
+      <div class="ru-est__graficas" [class.ru-est__cargando]="cargando()">
+        <div class="ru-grafica">
+          <h3>Daños más reportados</h3>
+          <ul class="ru-barras">
+            @for (barra of rankingTipo(); track barra.etiqueta; let i = $index) {
+              <li>
+                <div class="ru-barras__fila">
+                  <span class="ru-barras__etiqueta">{{ barra.etiqueta }}</span>
+                  <span class="ru-barras__valor">{{ barra.total }} · {{ barra.porcentajeDelTotal }}%</span>
+                </div>
+                <div class="ru-barras__pista" role="img" [attr.aria-label]="barra.etiqueta + ': ' + barra.total + ' reportes'">
+                  <div class="ru-barras__barra" [class.ru-barras__barra--primera]="i === 0 && barra.total > 0" [style.width.%]="barra.anchoBarra"></div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <div class="ru-grafica">
+          <h3>Bloques con más incidentes</h3>
+          <ul class="ru-barras">
+            @for (barra of rankingBloque(); track barra.etiqueta; let i = $index) {
+              <li>
+                <div class="ru-barras__fila">
+                  <span class="ru-barras__etiqueta">{{ barra.etiqueta }}</span>
+                  <span class="ru-barras__valor">{{ barra.total }} · {{ barra.porcentajeDelTotal }}%</span>
+                </div>
+                <div class="ru-barras__pista" role="img" [attr.aria-label]="barra.etiqueta + ': ' + barra.total + ' reportes'">
+                  <div class="ru-barras__barra" [class.ru-barras__barra--primera]="i === 0 && barra.total > 0" [style.width.%]="barra.anchoBarra"></div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <div class="ru-grafica">
+          <h3>Reparto por prioridad</h3>
+          <div class="ru-dona">
+            <svg class="ru-dona__svg" viewBox="0 0 42 42" role="img" aria-label="Reportes por prioridad">
+              <circle class="ru-dona__pista" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6"></circle>
+              @for (seg of segmentos(); track seg.codigo) {
+                @if (seg.total > 0) {
+                  <circle
+                    cx="21" cy="21" r="15.9155" fill="none" stroke-width="6"
+                    [attr.stroke]="seg.color"
+                    [attr.stroke-dasharray]="seg.longitud + ' ' + (100 - seg.longitud)"
+                    [attr.stroke-dashoffset]="seg.desplazamiento"
+                  ></circle>
+                }
+              }
+              <text x="21" y="20.5" text-anchor="middle" class="ru-dona__total">{{ d.totalReportes }}</text>
+              <text x="21" y="26" text-anchor="middle" class="ru-dona__sub">reportes</text>
+            </svg>
+
+            <ul class="ru-dona__leyenda">
+              @for (seg of segmentos(); track seg.codigo) {
+                <li>
+                  <span class="ru-dona__punto" [style.background]="seg.color"></span>
+                  <span class="ru-dona__nombre">{{ seg.etiqueta }}</span>
+                  <span class="ru-dona__valor">{{ seg.total }} · {{ seg.porcentaje }}%</span>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</section>

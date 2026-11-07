@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
+import { EstadisticasAdmin } from './estadisticas-admin/estadisticas-admin';
 import { AuthService } from '../../core/services/auth.service';
 import { AdminReporteService } from '../../core/services/admin-reporte.service';
 import { AdminResumen } from '../../core/models/admin-reporte.model';
@@ -15,7 +16,7 @@ import {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, EstadisticasAdmin],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

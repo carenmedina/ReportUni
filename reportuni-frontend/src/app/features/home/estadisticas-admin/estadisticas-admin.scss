@@ -1,0 +1,276 @@
+.ru-est {
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px solid var(--ru-border);
+  border-radius: 6px;
+  padding: 22px 26px;
+
+  h2 {
+    font-size: 16px;
+    margin: 0 0 3px 0;
+    color: var(--ru-green-dark);
+  }
+}
+
+.ru-est__cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+
+  p {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--ru-text-faint);
+  }
+}
+
+.ru-est__filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ru-est__chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ru-chip {
+  border: 1px solid var(--ru-border-input);
+  background: #ffffff;
+  color: var(--ru-text-muted);
+  border-radius: 14px;
+  padding: 7px 13px;
+  font-size: 12.5px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.ru-chip:hover {
+  border-color: var(--ru-green);
+}
+
+.ru-chip--activo {
+  background: var(--ru-green-light);
+  border-color: var(--ru-green);
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.ru-est__fecha {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  span {
+    font-size: 11px;
+    color: var(--ru-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 700;
+  }
+
+  input {
+    padding: 6px 9px;
+    border: 1px solid var(--ru-border-input);
+    border-radius: 4px;
+    font-size: 12.5px;
+    font-family: inherit;
+    color: var(--ru-text);
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--ru-green);
+  }
+}
+
+.ru-est__kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.ru-kpi {
+  border: 1px solid var(--ru-border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    font-size: 24px;
+    color: var(--ru-green-dark);
+  }
+
+  span {
+    font-size: 12px;
+    color: var(--ru-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  small {
+    font-size: 11.5px;
+    color: var(--ru-text-faint);
+    margin-top: 4px;
+  }
+}
+
+.ru-est__cargando {
+  opacity: 0.55;
+  transition: opacity 0.15s;
+}
+
+.ru-est__graficas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
+}
+
+.ru-grafica h3 {
+  font-size: 13px;
+  margin: 0 0 14px 0;
+  color: var(--ru-text);
+}
+
+.ru-barras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.ru-barras__fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+  margin-bottom: 4px;
+}
+
+.ru-barras__etiqueta {
+  color: var(--ru-text);
+}
+
+.ru-barras__valor {
+  color: var(--ru-text-muted);
+  white-space: nowrap;
+}
+
+.ru-barras__pista {
+  height: 9px;
+  background: #eef2f3;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.ru-barras__barra {
+  height: 100%;
+  min-width: 0;
+  background: #9ccf9c;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.ru-barras__barra--primera {
+  background: var(--ru-green);
+}
+
+.ru-dona {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.ru-dona__svg {
+  width: 168px;
+  height: 168px;
+}
+
+.ru-dona__pista {
+  stroke: #eef2f3;
+}
+
+.ru-dona__total {
+  font-size: 7px;
+  font-weight: 700;
+  fill: var(--ru-green-dark);
+}
+
+.ru-dona__sub {
+  font-size: 2.6px;
+  fill: var(--ru-text-soft);
+}
+
+.ru-dona__leyenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+  }
+}
+
+.ru-dona__punto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ru-dona__nombre {
+  flex: 1;
+  color: var(--ru-text);
+}
+
+.ru-dona__valor {
+  color: var(--ru-text-muted);
+  white-space: nowrap;
+}
+
+.ru-est__estado {
+  text-align: center;
+  padding: 26px 8px;
+  font-size: 13.5px;
+  color: var(--ru-text-muted);
+}
+
+.ru-est__estado--error {
+  color: #c0392b;
+}
+
+@media (max-width: 1100px) {
+  .ru-est__graficas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .ru-est {
+    padding: 16px;
+  }
+
+  .ru-est__kpis,
+  .ru-est__graficas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
