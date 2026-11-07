@@ -27,5 +27,9 @@ public interface ReporteRepository extends JpaRepository<Reporte, Long> {
 
     long countByEstado(EstadoReporte estado);
 
+    long countByUsuarioId(Long usuarioId);
+
+    long countByUsuarioIdAndEstado(Long usuarioId, EstadoReporte estado);
+
     long countByEstadoAndPrioridadEstimada(EstadoReporte estado, PrioridadReporte prioridad);
 }

@@ -39,6 +39,9 @@ public class Usuario {
     @Builder.Default
     private boolean activo = true;
 
+    @Column(name = "foto_perfil", length = 80)
+    private String fotoPerfil;
+
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 

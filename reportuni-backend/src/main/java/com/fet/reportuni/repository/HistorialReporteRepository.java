@@ -3,6 +3,8 @@ package com.fet.reportuni.repository;
 import com.fet.reportuni.model.HistorialReporte;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +16,7 @@ public interface HistorialReporteRepository extends JpaRepository<HistorialRepor
 
     @EntityGraph(attributePaths = "fotos")
     Optional<HistorialReporte> findByIdAndReporteId(Long id, Long reporteId);
+
+    @Query("select count(distinct h.reporte.id) from HistorialReporte h where h.realizadoPor.id = :usuarioId")
+    long contarReportesGestionados(@Param("usuarioId") Long usuarioId);
 }
