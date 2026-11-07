@@ -17,7 +17,8 @@ public class NavegacionService {
         if (usuario.getRol() == Rol.ADMINISTRADOR) {
             items = List.of(
                     new MenuItem("Resumen", "/inicio", "home"),
-                    new MenuItem("Reportes (gestión)", "/admin/reportes", "settings")
+                    new MenuItem("Reportes (gestión)", "/admin/reportes", "settings"),
+                    new MenuItem("Estudiantes", "/admin/estudiantes", "users")
             );
         } else {
             items = List.of(
