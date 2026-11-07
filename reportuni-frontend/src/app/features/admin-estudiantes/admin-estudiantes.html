@@ -1,0 +1,97 @@
+<div class="ru-est">
+  <div class="ru-est__heading">
+    <h1>Estudiantes</h1>
+    <p>
+      Carga masiva de cuentas desde un archivo CSV. Cada estudiante recibe como contraseña inicial su número de
+      documento, y después puede cambiarla desde su perfil.
+    </p>
+  </div>
+
+  <section class="ru-panel">
+    <h2>Formato del archivo</h2>
+    <p class="ru-est__texto">
+      La primera fila debe tener los encabezados <strong>documento</strong>, <strong>nombre</strong> y
+      <strong>correo</strong>, separados por punto y coma o por coma. Máximo 1000 estudiantes y 2 MB por carga.
+    </p>
+    <ul class="ru-est__reglas">
+      <li>Si el correo ya existe, se actualiza el nombre y no se toca la contraseña.</li>
+      <li>Las filas con errores se rechazan y las demás se cargan.</li>
+      <li>El archivo no se guarda en el servidor.</li>
+    </ul>
+    <button type="button" class="ru-btn-secondary" (click)="descargarPlantilla()">Descargar plantilla</button>
+  </section>
+
+  <section class="ru-panel">
+    <h2>Cargar archivo</h2>
+
+    <div class="ru-est__selector">
+      <label class="ru-btn-secondary ru-est__elegir" for="archivo-estudiantes">Elegir archivo CSV</label>
+      <input
+        id="archivo-estudiantes"
+        class="ru-est__input"
+        type="file"
+        accept=".csv,.txt,text/csv"
+        [disabled]="cargando()"
+        (change)="seleccionar($event)"
+      />
+      @if (archivo(); as elegido) {
+        <span class="ru-est__nombre">{{ elegido.name }} · {{ tamano(elegido) }}</span>
+      } @else {
+        <span class="ru-est__nombre ru-est__nombre--vacio">Ningún archivo seleccionado</span>
+      }
+    </div>
+
+    @if (error(); as mensaje) {
+      <div class="ru-aviso ru-aviso--error" role="alert">{{ mensaje }}</div>
+    }
+
+    <div class="ru-est__acciones">
+      <button type="button" class="ru-btn-primary" [disabled]="!archivo() || cargando()" (click)="cargar()">
+        {{ cargando() ? 'Cargando...' : 'Cargar estudiantes' }}
+      </button>
+    </div>
+  </section>
+
+  @if (resultado(); as r) {
+    <section class="ru-panel" aria-live="polite">
+      <h2>Resultado de la carga</h2>
+      <div class="ru-est__cifras">
+        <div class="ru-est__cifra">
+          <strong>{{ r.filasLeidas }}</strong>
+          <span>Filas leídas</span>
+        </div>
+        <div class="ru-est__cifra ru-est__cifra--ok">
+          <strong>{{ r.creados }}</strong>
+          <span>Creados</span>
+        </div>
+        <div class="ru-est__cifra">
+          <strong>{{ r.actualizados }}</strong>
+          <span>Actualizados</span>
+        </div>
+        <div class="ru-est__cifra" [class.ru-est__cifra--error]="r.rechazados > 0">
+          <strong>{{ r.rechazados }}</strong>
+          <span>Rechazados</span>
+        </div>
+      </div>
+
+      @if (r.errores.length > 0) {
+        <table class="ru-tabla">
+          <tr>
+            <td class="ru-th" style="width: 70px;">Fila</td>
+            <td class="ru-th" style="width: 260px;">Correo</td>
+            <td class="ru-th">Motivo</td>
+          </tr>
+          @for (e of r.errores; track e.fila) {
+            <tr>
+              <td class="ru-td ru-td--muted">{{ e.fila }}</td>
+              <td class="ru-td">{{ e.correo || '—' }}</td>
+              <td class="ru-td">{{ e.motivo }}</td>
+            </tr>
+          }
+        </table>
+      } @else {
+        <p class="ru-est__texto">Todas las filas se procesaron correctamente.</p>
+      }
+    </section>
+  }
+</div>
